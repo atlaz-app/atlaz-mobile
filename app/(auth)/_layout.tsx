@@ -1,11 +1,16 @@
-import { useNavigationState } from "@react-navigation/native";
 import { Stack } from "expo-router";
 
 export default function AuthLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="login/index" options={{ headerShown: false }} />
-      <Stack.Screen name="register/index" options={{ headerShown: false }} />
+    <Stack
+      screenOptions={{
+        animation: "slide_from_bottom",
+        headerShown: false,
+        animationDuration: 500,
+      }}
+    >
+      <Stack.Screen name="login/index" />
+      <Stack.Screen name="register/index" options={{ presentation: "modal" }} />
     </Stack>
   );
 }

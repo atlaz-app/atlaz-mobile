@@ -20,8 +20,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthHelper } from "@/infrastructure/services/Auth";
 import { RegisterForm, registerSchema } from "@/forms";
 import { FormPasswordInput, FormTextInput } from "@/core/Inputs";
+import { BaseButton } from "@/core/Buttons";
+import { FormError } from "@/core/Indicators";
 
 export default function RegisterScreen() {
+  const [isLoading, setLoading] = React.useState(false);
   const [submissionErrorMessage, setSubmissionErrorMessage] =
     React.useState("");
 
@@ -58,18 +61,21 @@ export default function RegisterScreen() {
           name="username"
           placeholder="Enter username"
           autoCorrect={false}
+          className="bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormTextInput
           control={control}
           name="email"
           placeholder="Enter email"
           textContentType="emailAddress"
+          className=" bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormTextInput
           control={control}
           name="age"
           placeholder="Enter age"
           keyboardType="numeric"
+          className=" bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormTextInput
           control={control}
@@ -77,28 +83,31 @@ export default function RegisterScreen() {
           placeholder="Years of experience"
           keyboardType="numeric"
           autoCorrect={false}
+          className=" bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormPasswordInput
           control={control}
           name="password"
           placeholder="Create password"
+          className=" bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormPasswordInput
           control={control}
           name="confirmPassword"
           placeholder="Confirm password"
+          className=" bg-[#DABAAB] focus:bg-[#ecae91"
         />
-        <View className="h-8 items-center justify-center">
-          <Text className="text-[#d52855]">
-            {submissionErrorMessage || Object.values(errors)?.[0]?.message}
-          </Text>
-        </View>
-        <Pressable
-          className="flex justify-center items-center bg-[#FE7899] rounded-xl w-5/6 p-4 h-[50]"
+        <FormError
+          message={
+            submissionErrorMessage || Object.values(errors)?.[0]?.message
+          }
+        />
+        <BaseButton
+          className="bg-[#FE7899]"
+          isLoading={isLoading}
           onPress={register}
-        >
-          <Text className="text-slate-950 font-semibold">Sign Up</Text>
-        </Pressable>
+          content="Sign Up"
+        />
         <Button
           onPress={async () => {
             router.navigate("/(auth)/login");

@@ -12,10 +12,13 @@ import {
   Keyboard,
 } from "react-native";
 
+import clsx from "clsx";
+
 import { Controller } from "react-hook-form";
 
 type FormTextInputProps = {
   name: string;
+  className?: string;
   placeholder: string;
   control: any;
   autoCorrect?: boolean;
@@ -26,6 +29,7 @@ type FormTextInputProps = {
 export const FormTextInput = ({
   control,
   name,
+  className,
   placeholder,
   autoCorrect,
   textContentType,
@@ -37,7 +41,10 @@ export const FormTextInput = ({
       name={name}
       render={({ field: { onChange, onBlur, value } }) => (
         <TextInput
-          className="w-5/6 bg-[#DABAAB] focus:bg-[#ecae91] rounded-xl p-4 placeholder:text-slate-500 placeholder:text-sm h-[50]"
+          className={clsx(
+            "w-5/6 rounded-xl p-4 placeholder:text-slate-500 placeholder:text-sm h-[50]",
+            className
+          )}
           placeholder={placeholder}
           onBlur={onBlur}
           onChangeText={onChange}

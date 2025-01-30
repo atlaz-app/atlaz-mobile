@@ -1,4 +1,3 @@
-import { useAuthStore } from "@/store/authStore";
 import { router, useFocusEffect } from "expo-router";
 import React from "react";
 import {
@@ -12,6 +11,7 @@ import {
   Button,
   TextInput,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
 
 import Icon from "@expo/vector-icons/Ionicons";
@@ -22,8 +22,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthHelper } from "@/infrastructure/services/Auth";
 import { LoginForm, loginSchema } from "@/forms";
 import { FormPasswordInput, FormTextInput } from "@/core/Inputs";
+import { BaseButton } from "@/core/Buttons";
+import { FormError } from "@/core/Indicators";
 
 export default function LoginScreen() {
+  const [isLoading, setLoading] = React.useState(false);
   const [submissionErrorMessage, setSubmissionErrorMessage] =
     React.useState("");
 
@@ -35,11 +38,15 @@ export default function LoginScreen() {
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   const login = handleSubmit(async (data: LoginForm) => {
+    setLoading(true);
     const loginSuccess = await AuthHelper.login(data);
 
     if (!loginSuccess) {
+      setLoading(false);
       return setSubmissionErrorMessage("Failed to authenticate. Try again!");
     }
+
+    setLoading(false);
     router.navigate("/(dashboard)/home");
   });
 
@@ -69,23 +76,25 @@ export default function LoginScreen() {
           placeholder="Enter email"
           textContentType="emailAddress"
           autoCorrect={true}
+          className="bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormPasswordInput
           control={control}
           name="password"
           placeholder="Enter password"
+          className="bg-[#DABAAB] focus:bg-[#ecae91]"
         />
-        <View className="h-8 items-center justify-center">
-          <Text className="text-[#d52855]">
-            {submissionErrorMessage || Object.values(errors)?.[0]?.message}
-          </Text>
-        </View>
-        <Pressable
-          className="flex justify-center items-center bg-[#FE7899] rounded-xl w-5/6 p-4 h-[50]"
+        <FormError
+          message={
+            submissionErrorMessage || Object.values(errors)?.[0]?.message
+          }
+        />
+        <BaseButton
+          className="bg-[#FE7899]"
+          isLoading={isLoading}
           onPress={login}
-        >
-          <Text className="text-[slate-950] font-semibold">Sign In</Text>
-        </Pressable>
+          content="Sign In"
+        />
         <Button
           onPress={async () => {
             router.navigate("/(auth)/register");

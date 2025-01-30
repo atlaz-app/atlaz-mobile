@@ -16,10 +16,13 @@ import Icon from "@expo/vector-icons/Ionicons";
 
 import { Controller } from "react-hook-form";
 
+import clsx from "clsx";
+
 type FormPasswordInputProps = {
   name: string;
   placeholder: string;
   control: any;
+  className?: string;
   autoCorrect?: boolean;
   keyboardType?: any;
 };
@@ -27,6 +30,7 @@ type FormPasswordInputProps = {
 export const FormPasswordInput = ({
   control,
   name,
+  className,
   placeholder,
   autoCorrect,
   keyboardType,
@@ -43,7 +47,10 @@ export const FormPasswordInput = ({
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            className=" bg-[#DABAAB] focus:bg-[#ecae91] rounded-xl p-4 placeholder:text-slate-500 placeholder:text-sm h-full"
+            className={clsx(
+              "rounded-xl p-4 placeholder:text-slate-500 placeholder:text-sm h-full",
+              className
+            )}
             textContentType="oneTimeCode"
             secureTextEntry={hidePassword}
             placeholder={placeholder}
