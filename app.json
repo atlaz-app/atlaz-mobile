@@ -20,14 +20,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.lukasssicevs.musclemeter"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": ["expo-router", "expo-video", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-video",
+      "expo-secure-store",
+      "./plugins/neuroSDK-plugin.ts"
+    ],
     "experiments": {
       "typedRoutes": true
     },

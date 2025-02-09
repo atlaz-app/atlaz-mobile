@@ -18,7 +18,7 @@ export const AuthHelper = {
       return false;
     }
   },
-  register: async (data: RegisterForm): Promise<boolean> => {
+  register: async (data: RegisterForm): Promise<string | undefined> => {
     try {
       const { confirmPassword, age, experienceYears, ...rest } = data;
 
@@ -30,10 +30,23 @@ export const AuthHelper = {
 
       const registrationResponse = await AuthApi.register(registerRequestBody);
 
+      return registrationResponse.data.email;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+
+  verifyEmail: async (data: {
+    email: string;
+    code: string;
+  }): Promise<boolean> => {
+    try {
+      const verifyEmailResponse = await AuthApi.verifyEmail(data);
+
       const authStore = useAuthStore.getState();
 
-      authStore.setAccessToken(registrationResponse.data.accessToken);
-      authStore.setRefreshToken(registrationResponse.data.refreshToken);
+      authStore.setAccessToken(verifyEmailResponse.data.accessToken);
+      authStore.setRefreshToken(verifyEmailResponse.data.refreshToken);
       authStore.setAuthenticated(true);
       return true;
     } catch (e) {

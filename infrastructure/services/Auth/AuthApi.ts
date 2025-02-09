@@ -15,12 +15,21 @@ export type RegisterRequestBody = {
   password: string;
 };
 
+export type VerifyEmailRequestBody = {
+  email: string;
+  code: string;
+};
+
 export type LoginResponse = {
   accessToken: string;
   refreshToken: string;
 };
 
 export type RegisterResponse = {
+  email: string;
+};
+
+export type VerifyEmailResponse = {
   accessToken: string;
   refreshToken: string;
 };
@@ -35,4 +44,13 @@ export const AuthApi = {
     backendClient.post<RegisterResponse>(BackendPaths.AuthRegister, data, {
       withAuth: false,
     }),
+
+  verifyEmail: (data: VerifyEmailRequestBody) =>
+    backendClient.post<VerifyEmailResponse>(
+      BackendPaths.AuthVerifyEmail,
+      data,
+      {
+        withAuth: false,
+      }
+    ),
 };
