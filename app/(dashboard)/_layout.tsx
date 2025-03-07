@@ -15,27 +15,44 @@ export default function DashboardLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "black",
+          borderTopWidth: 0,
+        },
+        tabBarActiveTintColor: "white",
       }}
     >
       <Tabs.Screen
-        name="home/index"
+        name="tracker"
         options={{
-          title: "Home",
+          title: "Tracker",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+              name={focused ? "speedometer" : "speedometer-outline"}
               color={color}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore/index"
+        name="explorer/index"
         options={{
-          title: "Explore",
+          title: "Explorer",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+              name={focused ? "compass" : "compass-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="stats/index"
+        options={{
+          title: "Stats",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "stats-chart" : "stats-chart-outline"}
               color={color}
             />
           ),
@@ -47,7 +64,7 @@ export default function DashboardLayout() {
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "body" : "body-outline"}
+              name={focused ? "person-circle" : "person-circle-outline"}
               color={color}
             />
           ),

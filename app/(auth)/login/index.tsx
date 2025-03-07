@@ -47,7 +47,7 @@ export default function LoginScreen() {
     }
 
     setLoading(false);
-    router.navigate("/(dashboard)/home");
+    router.navigate("/(dashboard)/tracker");
   });
 
   useFocusEffect(
@@ -60,13 +60,13 @@ export default function LoginScreen() {
 
   return (
     <ScrollView
-      className="bg-[#181F2a] px-4 pt-[84px] w-full h-full"
+      className="px-4 pt-[84px] w-full h-full"
       onTouchStart={() => {
         setSubmissionErrorMessage("");
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <Text className="text-[#ecae91] text-[36px] text-center mb-[80px]">
+      <Text className="text-[#ffffff] text-[36px] text-center mb-[80px]">
         Login
       </Text>
       <View className="w-full items-center gap-2">
@@ -76,31 +76,24 @@ export default function LoginScreen() {
           placeholder="Enter email"
           textContentType="emailAddress"
           autoCorrect={true}
-          className="bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormPasswordInput
           control={control}
           name="password"
           placeholder="Enter password"
-          className="bg-[#DABAAB] focus:bg-[#ecae91]"
         />
         <FormError
           message={
             submissionErrorMessage || Object.values(errors)?.[0]?.message
           }
         />
-        <BaseButton
-          className="bg-[#FE7899]"
-          isLoading={isLoading}
-          onPress={login}
-          content="Sign In"
-        />
+        <BaseButton isLoading={isLoading} onPress={login} content="Sign In" />
         <Button
           onPress={async () => {
             router.navigate("/(auth)/register");
           }}
           title="Sign Up"
-          color="#FE7899"
+          color="white"
         ></Button>
       </View>
     </ScrollView>

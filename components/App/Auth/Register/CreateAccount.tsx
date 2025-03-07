@@ -63,7 +63,7 @@ export default function CreateAccount({
 
   return (
     <View
-      className="w-full items-center gap-2"
+      className="w-full items-center gap-2 mb-2"
       onTouchStart={() => {
         clearErrors("password");
       }}
@@ -73,21 +73,18 @@ export default function CreateAccount({
         name="username"
         placeholder="Enter username"
         autoCorrect={false}
-        className="bg-[#DABAAB] focus:bg-[#ecae91]"
       />
       <FormTextInput
         control={control}
         name="email"
         placeholder="Enter email"
         textContentType="emailAddress"
-        className=" bg-[#DABAAB] focus:bg-[#ecae91]"
       />
       <FormTextInput
         control={control}
         name="age"
         placeholder="Enter age"
         keyboardType="numeric"
-        className=" bg-[#DABAAB] focus:bg-[#ecae91]"
       />
       <FormTextInput
         control={control}
@@ -95,23 +92,19 @@ export default function CreateAccount({
         placeholder="Years of experience"
         keyboardType="numeric"
         autoCorrect={false}
-        className=" bg-[#DABAAB] focus:bg-[#ecae91]"
       />
       <FormPasswordInput
         control={control}
         name="password"
         placeholder="Create password"
-        className=" bg-[#DABAAB] focus:bg-[#ecae91]"
       />
       <FormPasswordInput
         control={control}
         name="confirmPassword"
         placeholder="Confirm password"
-        className=" bg-[#DABAAB] focus:bg-[#ecae91"
       />
       <FormError message={Object.values(errors)?.[0]?.message} />
       <BaseButton
-        className="bg-[#FE7899]"
         isLoading={isLoading}
         onPress={createAccount}
         content="Sign Up"

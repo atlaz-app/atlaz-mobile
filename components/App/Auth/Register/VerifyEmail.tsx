@@ -53,7 +53,7 @@ export default function VerifyEmail({
     }
 
     setLoading(false);
-    router.replace("/(dashboard)/home");
+    router.replace("/(dashboard)/tracker");
   });
 
   return (
@@ -69,11 +69,9 @@ export default function VerifyEmail({
         placeholder="Enter code"
         autoCorrect={false}
         textContentType="oneTimeCode"
-        className="bg-[#DABAAB] focus:bg-[#ecae91]"
       />
       <FormError message={Object.values(errors)?.[0]?.message} />
       <BaseButton
-        className="bg-[#FE7899]"
         isLoading={isLoading}
         onPress={verifyEmail}
         content="Verify Email"

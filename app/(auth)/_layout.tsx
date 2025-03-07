@@ -7,6 +7,7 @@ export default function AuthLayout() {
         animation: "slide_from_bottom",
         headerShown: false,
         animationDuration: 500,
+        contentStyle: { backgroundColor: "#000000" },
       }}
     >
       <Stack.Screen name="login/index" />

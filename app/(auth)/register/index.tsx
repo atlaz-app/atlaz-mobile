@@ -26,11 +26,11 @@ export default function RegisterScreen() {
 
   return (
     <ScrollView
-      className="bg-[#181F2A] px-4 pt-[84px] w-full h-full"
+      className="px-4 pt-[84px] w-full h-full"
       keyboardShouldPersistTaps="handled"
       automaticallyAdjustKeyboardInsets
     >
-      <Text className="text-[#ecae91] text-[36px] text-center mb-[80px]">
+      <Text className="text-white text-[36px] text-center mb-[80px]">
         {registerStep}
       </Text>
       {registerStep === RegisterStep.CreateAccount && (
@@ -44,7 +44,7 @@ export default function RegisterScreen() {
           router.navigate("/(auth)/login");
         }}
         title="Sign In"
-        color="#FE7899"
+        color="white"
       />
     </ScrollView>
   );

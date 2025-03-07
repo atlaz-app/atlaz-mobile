@@ -16,6 +16,7 @@ import {
 import clsx from "clsx";
 
 type BaseButtonProps = {
+  color?: string;
   content: any;
   isLoading?: boolean;
   className?: string;
@@ -27,19 +28,27 @@ export const BaseButton = ({
   className,
   onPress,
   content,
+  color,
 }: BaseButtonProps) => {
   return (
     <Pressable
       className={clsx(
-        "flex justify-center items-center rounded-xl w-5/6 p-4 h-[50]",
+        "flex justify-center items-center rounded-xl w-5/6 p-2 border-dashed border-[1px] border-white h-[50]",
         className
       )}
       onPress={onPress}
     >
       {isLoading ? (
-        <ActivityIndicator size="small" color="#181F2a" />
+        <ActivityIndicator size="small" color="white" />
       ) : (
-        <Text className="text-[slate-950] font-semibold">{content}</Text>
+        <Text
+          className={clsx(
+            "text-white font-semibold text-lg",
+            color && `text-${color}`
+          )}
+        >
+          {content}
+        </Text>
       )}
     </Pressable>
   );

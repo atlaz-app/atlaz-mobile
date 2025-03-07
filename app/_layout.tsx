@@ -10,11 +10,15 @@ export default function Root() {
   console.log("root", authenticated);
 
   React.useEffect(() => {
-    router.push(authenticated ? "/(dashboard)/home" : "/(auth)/login");
+    router.push(authenticated ? "/(dashboard)/explorer" : "/(auth)/login");
   }, []);
 
   return authenticated ? (
-    <Stack>
+    <Stack
+      screenOptions={{
+        contentStyle: { backgroundColor: "#000000" },
+      }}
+    >
       <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" />
     </Stack>

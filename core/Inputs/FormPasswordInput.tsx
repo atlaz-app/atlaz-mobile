@@ -48,7 +48,8 @@ export const FormPasswordInput = ({
             onChangeText={onChange}
             value={value}
             className={clsx(
-              "rounded-xl p-4 placeholder:text-slate-500 placeholder:text-sm h-full",
+              "w-full rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-full",
+
               className
             )}
             textContentType="oneTimeCode"
@@ -61,7 +62,11 @@ export const FormPasswordInput = ({
             className="absolute right-0 p-4  top-1/2 transform -translate-y-1/2"
             onPress={() => setHidePassword(!hidePassword)}
           >
-            <Icon name={hidePassword ? "eye-off" : "eye"} size={16} />
+            <Icon
+              name={hidePassword ? "eye-off" : "eye"}
+              size={16}
+              color={"white"}
+            />
           </Pressable>
         </View>
       )}
