@@ -1,5 +1,7 @@
 import { BackendPaths } from "@/enums/Paths";
 import backendClient from "../../clients/backendClient";
+import { Preset } from "@/types/components";
+import { AxiosResponse } from "axios";
 
 type LoginRequestBody = {
   email: string;
@@ -15,5 +17,15 @@ export type RegisterRequestBody = {
 };
 
 export const UserApi = {
-  getAllUsers: () => backendClient.get(BackendPaths.UserAll),
+  settings: {
+    getUserInfo: async () => backendClient.get<any>(BackendPaths.UserInfo),
+  },
+  presets: {
+    createPreset: async (preset: Preset) =>
+      backendClient.post<Preset[]>(BackendPaths.UserPresets, preset),
+    getPresetList: async () =>
+      backendClient.get<Preset[]>(BackendPaths.UserPresets),
+    deletePreset: async (presetId: number) =>
+      backendClient.delete<Preset[]>(BackendPaths.UserPresetById(presetId)),
+  },
 };

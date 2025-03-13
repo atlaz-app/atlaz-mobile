@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 
-import { Link, router } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 
 import {
   CallibriSensor,
@@ -43,7 +43,7 @@ export default function BlindTracker() {
     value: useTrackerStore.getState().sessionBase!,
   }));
   const { sensor } = useGlobalStore();
-  const sessionBase = useTrackerStore().sessionBase!;
+  const { sessionBase, setSessionBase, config } = useTrackerStore();
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<number[]>(defaultEnvelopeRef);
@@ -85,10 +85,6 @@ export default function BlindTracker() {
       SensorFilter.FilterLPFBwhLvl2CutoffFreq400Hz,
     ];
     sensor?.setHardwareFilters(filters);
-    // sensor?.setSignalType(CallibriSignalType.EMG);
-    // sensor?.setGain(SensorGain.Gain2);
-
-    // sensor?.setADCInput(SensorADCInput.Electrodes);
 
     try {
       await sensor?.execute(SensorCommand.StartEnvelope);
@@ -116,17 +112,22 @@ export default function BlindTracker() {
 
   React.useEffect(() => {
     if (
+      sessionBase &&
       envelope?.[envelope.length - 1]?.value > sessionBase * 10 &&
       muscleState === "relaxed"
     ) {
       setMuscleState("regular");
     }
 
-    if (envelope?.[envelope.length - 1]?.value > sessionBase * 35) {
+    if (
+      sessionBase &&
+      envelope?.[envelope.length - 1]?.value > sessionBase * 35
+    ) {
       setMuscleState("effective");
     }
 
     if (
+      sessionBase &&
       envelope?.[envelope.length - 1]?.value < sessionBase * 4 &&
       (muscleState === "regular" || muscleState === "effective")
     ) {
@@ -139,24 +140,19 @@ export default function BlindTracker() {
     }
   }, [envelope]);
 
-  const graphOffset = sessionBase - sessionBase / 2;
+  const graphOffset = sessionBase && sessionBase - sessionBase / 2;
 
-  const graphMaxValue = sessionBase * 50;
+  const graphMaxValue = sessionBase && sessionBase * 50;
 
-  // const graphMaxValue =
-  //   sessionBase * 10 > Math.max(...envelopeRef.current)
-  //     ? sessionBase * 10
-  //     : Math.max(...envelopeRef.current);
-
-  console.log(
-    // sampleCountRef.current,
-    // muscleState,
-    envelope?.[0]?.value,
-    sessionBase
-    // envelopeRef.current.length,
-    // envelope.length,
-    // graphOffset,
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        setSessionBase(undefined);
+      };
+    }, [])
   );
+
+  console.log(sessionBase);
 
   return (
     <Pressable onPress={stopTracking}>
@@ -214,23 +210,22 @@ export default function BlindTracker() {
           )}
         >
           <Pressable
-            onPress={() => router.navigate("/(dashboard)/tracker/setup")}
+            onPress={() =>
+              router.navigate("/(dashboard)/tracker/setup/preset-list")
+            }
           >
             <View className="flex flex-row gap-4 items-center">
               <Ionicons size={24} color="white" name="settings-outline" />
               <Text className="text-white text-2xl font-semibold">
-                Workout 3
+                {config?.name || "Workout"}
               </Text>
             </View>
           </Pressable>
-          <View className="bg-white p-4 rounded-full">
-            <Ionicons
-              size={24}
-              color="black"
-              name="play"
-              onPress={startTracking}
-            />
-          </View>
+          <Pressable onPress={startTracking}>
+            <View className="bg-white p-4 rounded-full">
+              <Ionicons size={24} color="black" name="play" />
+            </View>
+          </Pressable>
         </View>
       </View>
     </Pressable>

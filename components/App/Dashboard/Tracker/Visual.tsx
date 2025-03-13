@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React from "react";
 
-import { Link, router } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 
 import {
   CallibriSensor,
@@ -40,6 +40,7 @@ const defaultEnvelope = Array.from({ length: 50 }, () => ({ value: 0.0009 }));
 
 export default function VisualTracker() {
   const { sensor } = useGlobalStore();
+  const { sessionBase, setSessionBase, config } = useTrackerStore();
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<{ value: number }[]>(defaultEnvelope);
@@ -59,12 +60,6 @@ export default function VisualTracker() {
 
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
-  };
-
-  const takePicture = async () => {
-    const picture = await cameraRef.current?.takePictureAsync();
-    setImageUri(picture?.uri);
-    console.log("ds", picture);
   };
 
   const startTracking = async () => {
@@ -95,9 +90,6 @@ export default function VisualTracker() {
       SensorFilter.FilterLPFBwhLvl2CutoffFreq400Hz,
     ];
     sensor?.setHardwareFilters(filters);
-    sensor?.setSignalType(CallibriSignalType.EMG);
-    sensor?.setGain(SensorGain.Gain1);
-    sensor?.setADCInput(SensorADCInput.Electrodes);
 
     try {
       await sensor?.execute(SensorCommand.StartEnvelope);
@@ -123,18 +115,23 @@ export default function VisualTracker() {
 
   React.useEffect(() => {
     if (
-      envelope?.[envelope.length - 1]?.value > 0.0025 &&
+      sessionBase &&
+      envelope?.[envelope.length - 1]?.value > sessionBase * 10 &&
       muscleState === "relaxed"
     ) {
       setMuscleState("regular");
     }
 
-    if (envelope?.[envelope.length - 1]?.value > 0.004) {
+    if (
+      sessionBase &&
+      envelope?.[envelope.length - 1]?.value > sessionBase * 35
+    ) {
       setMuscleState("effective");
     }
 
     if (
-      envelope?.[envelope.length - 1]?.value < 0.0022 &&
+      sessionBase &&
+      envelope?.[envelope.length - 1]?.value < sessionBase * 4 &&
       (muscleState === "regular" || muscleState === "effective")
     ) {
       setMuscleState("relaxed");
@@ -146,7 +143,13 @@ export default function VisualTracker() {
     }
   }, [envelope]);
 
-  console.log(sampleCountRef.current, muscleState, envelope?.[0]?.value);
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        setSessionBase(undefined);
+      };
+    }, [])
+  );
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -156,12 +159,16 @@ export default function VisualTracker() {
   if (!permission.granted) {
     // Camera permissions are not granted yet.
     return (
-      <View>
+      <View className="h-screen flex justify-center items-center">
         <Text>We need your permission to show the camera</Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
     );
   }
+
+  const graphOffset = sessionBase && sessionBase - sessionBase / 2;
+
+  const graphMaxValue = sessionBase && sessionBase * 50;
 
   return (
     <Pressable onPress={stopTracking}>
@@ -215,10 +222,10 @@ export default function VisualTracker() {
             curved
             thickness={3}
             hideDataPoints
-            maxValue={0.002}
+            maxValue={graphMaxValue}
             mostNegativeValue={0}
             hideRules
-            yAxisOffset={0.0001}
+            yAxisOffset={graphOffset}
             height={200}
             showYAxisIndices={false}
             showXAxisIndices={false}
@@ -231,28 +238,27 @@ export default function VisualTracker() {
         ) : (
           <View
             className={clsx(
-              "flex flex-row justify-between items-center mb-12  px-8 py-2 w-full rounded-full h-1/3",
+              "flex flex-row justify-between items-center mb-12  px-8 py-2 w-full h-1/3",
               isTracking && "invisible pointer-events-none"
             )}
           >
             <Pressable
-              onPress={() => router.navigate("/(dashboard)/tracker/setup")}
+              onPress={() =>
+                router.navigate("/(dashboard)/tracker/setup/preset-list")
+              }
             >
               <View className="flex flex-row gap-4 items-center">
                 <Ionicons size={24} color="white" name="settings-outline" />
                 <Text className="text-white text-2xl font-semibold">
-                  Workout 3
+                  {config?.name || "Workout"}
                 </Text>
               </View>
             </Pressable>
-            <View className="bg-white p-4 rounded-full">
-              <Ionicons
-                size={24}
-                color="black"
-                name="play"
-                onPress={startTracking}
-              />
-            </View>
+            <Pressable onPress={startTracking}>
+              <View className="bg-white p-4 rounded-full">
+                <Ionicons size={24} color="black" name="play" />
+              </View>
+            </Pressable>
           </View>
         )}
       </View>

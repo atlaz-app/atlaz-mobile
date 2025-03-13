@@ -4,5 +4,11 @@ export enum BackendPaths {
   AuthVerifyEmail = "/auth/verify-email",
   AuthRefresh = "/auth/refresh",
 
-  UserAll = "/users",
+  UserInfo = "/user/info",
+  UserPresets = "/user/presets",
+}
+
+export namespace BackendPaths {
+  export const UserPresetById = (id: number) =>
+    BackendPaths.UserPresets + "/" + id;
 }

@@ -2,28 +2,27 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { secureStore } from "./middleware";
 import { TrackerMode } from "@/enums/Common";
+import { Preset } from "@/types/components";
 
 interface TrackerState {
   sessionBase?: number;
-  mode?: TrackerMode;
-  setMode: (mode: TrackerMode) => void;
-  setSessionBase: (sessionBase: number) => void;
+  config?: Preset;
+  setSessionBase: (sessionBase?: number) => void;
+  setConfig: (config: Preset) => void;
 }
 
 export const useTrackerStore = create<TrackerState>()(
   persist(
     (set) => ({
       mode: TrackerMode.Blind,
-      setMode: (mode: TrackerMode) => set((state) => ({ mode })),
-      setSessionBase: (sessionBase: number) =>
+      setSessionBase: (sessionBase?: number) =>
         set((state) => ({ sessionBase })),
+      setConfig: (config: Preset) => set({ config }),
     }),
     {
       name: "tracker-secure-storage",
       storage: secureStore,
-      partialize: (state) => {
-        mode: state.mode;
-      },
+      partialize: (state) => {},
     }
   )
 );
