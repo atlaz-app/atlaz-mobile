@@ -4,7 +4,7 @@ import {
   TrackerMuscle,
   TrackerOptimization,
 } from "@/enums/Common";
-import { Preset } from "@/types/components";
+import { Preset } from "@/types";
 
 interface PresetState {
   muscle: TrackerMuscle;

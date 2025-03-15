@@ -1,6 +1,6 @@
 import { BackendPaths } from "@/enums/Paths";
 import backendClient from "../../clients/backendClient";
-import { Preset } from "@/types/components";
+import { Preset, UserInfo } from "@/types";
 import { AxiosResponse } from "axios";
 
 type LoginRequestBody = {
@@ -17,8 +17,8 @@ export type RegisterRequestBody = {
 };
 
 export const UserApi = {
-  settings: {
-    getUserInfo: async () => backendClient.get<any>(BackendPaths.UserInfo),
+  session: {
+    getUserInfo: async () => backendClient.get<UserInfo>(BackendPaths.UserInfo),
   },
   presets: {
     createPreset: async (preset: Preset) =>

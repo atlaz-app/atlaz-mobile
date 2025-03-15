@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { secureStore } from "./middleware";
 import { TrackerMode } from "@/enums/Common";
-import { Preset } from "@/types/components";
+import { Preset } from "@/types";
 
 interface TrackerState {
   sessionBase?: number;

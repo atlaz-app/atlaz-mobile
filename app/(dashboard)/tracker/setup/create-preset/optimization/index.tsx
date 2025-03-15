@@ -23,7 +23,7 @@ import {
   NavigationProp,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
-import { CreatePresetTabParamList } from "@/types/components";
+import { CreatePresetTabParamList } from "@/types";
 import clsx from "clsx";
 
 export type SetupCreatePresetOptimizationProps = NativeStackScreenProps<

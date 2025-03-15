@@ -29,8 +29,10 @@ import Svg, { Circle } from "react-native-svg";
 
 export default function Calibrator() {
   const router = useRouter();
-  const { sessionBase, setMode, setSessionBase } = useTrackerStore();
-  const { sensor } = useGlobalStore();
+  const { sessionBase, setSessionBase } = useTrackerStore();
+  const { activeSensor, sensorList } = useGlobalStore();
+
+  const sensor = sensorList?.[activeSensor!].sensor;
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<number[]>([]);

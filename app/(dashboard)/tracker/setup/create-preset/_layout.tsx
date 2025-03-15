@@ -15,7 +15,7 @@ import SetupCreatePresetMuscle from "./muscle";
 import SetupCreatePresetMode from "./mode";
 import SetupCreatePresetOptimization from "./optimization";
 import SetupCreatePresetSave from "./save";
-import { CreatePresetTabParamList } from "@/types/components";
+import { CreatePresetTabParamList } from "@/types";
 import { BaseButton } from "@/core/Buttons";
 import { useNavigation, useNavigationState } from "@react-navigation/native";
 import { PresetParam } from "@/enums/Common";

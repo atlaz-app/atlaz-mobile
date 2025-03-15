@@ -42,7 +42,9 @@ export default function BlindTracker() {
   const defaultEnvelope = Array.from({ length: 50 }, () => ({
     value: useTrackerStore.getState().sessionBase!,
   }));
-  const { sensor } = useGlobalStore();
+  const { activeSensor, sensorList } = useGlobalStore();
+
+  const sensor = sensorList?.[activeSensor!].sensor;
   const { sessionBase, setSessionBase, config } = useTrackerStore();
 
   const sampleCountRef = React.useRef(0);

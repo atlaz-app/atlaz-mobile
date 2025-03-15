@@ -1,23 +1,38 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { secureStore } from "./middleware";
-import { CallibriSensor } from "react-native-neurosdk2";
+import { CallibriSensor, SensorInfo } from "react-native-neurosdk2";
+
+export type SensorList = Record<
+  string,
+  {
+    info?: SensorInfo;
+    sensor?: CallibriSensor;
+    connected: boolean;
+  }
+>;
 
 interface GlobalState {
-  sensor?: CallibriSensor;
-  setSensor: (sensor: CallibriSensor) => void;
+  sensorList?: SensorList;
+  setSensorList: (sensorList: SensorList) => void;
+  activeSensor?: string;
+  setActiveSensor: (sensor?: string) => void;
 }
 
 export const useGlobalStore = create<GlobalState>()(
   persist(
     (set) => ({
-      setSensor: (sensor: CallibriSensor) => set((state) => ({ sensor })),
+      setActiveSensor: (activeSensor?: string) =>
+        set((state) => ({ activeSensor })),
+      setSensorList: (sensorList: SensorList) =>
+        set((state) => ({ sensorList })),
     }),
     {
       name: "global-secure-storage",
       storage: secureStore,
       partialize: (state) => {
-        sensor: state.sensor;
+        sensor: state.activeSensor;
+        sensorList: state.sensorList;
       },
     }
   )

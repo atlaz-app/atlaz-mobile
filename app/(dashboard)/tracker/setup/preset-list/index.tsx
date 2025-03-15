@@ -31,7 +31,7 @@ import {
 import useSWR from "swr";
 import { BackendPaths } from "@/enums/Paths";
 import { UserApi } from "@/infrastructure/services/User";
-import { Preset } from "@/types/components";
+import { Preset } from "@/types";
 import clsx from "clsx";
 
 export default function PresetList() {

@@ -19,7 +19,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { TrackerMode } from "@/enums/Common";
 import { useGlobalStore, usePresetStore } from "@/store";
 import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
-import { CreatePresetTabParamList } from "@/types/components";
+import { CreatePresetTabParamList } from "@/types";
 import clsx from "clsx";
 
 export type SetupCreatePresetModeProps = NativeStackScreenProps<
