@@ -1,8 +1,8 @@
-import { Tabs, Redirect } from "expo-router";
-import React from "react";
+import { Tabs, Redirect } from 'expo-router';
+import React from 'react';
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { useAuthStore } from "@/store/authStore";
+import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { useAuthStore } from '@/store/authStore';
 
 export default function DashboardLayout() {
   const { authenticated } = useAuthStore();
@@ -16,57 +16,44 @@ export default function DashboardLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "black",
+          backgroundColor: 'black',
           borderTopWidth: 0,
         },
-        tabBarActiveTintColor: "white",
-      }}
-    >
+        tabBarActiveTintColor: 'white',
+      }}>
       <Tabs.Screen
         name="tracker"
         options={{
-          title: "Tracker",
+          title: 'Tracker',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "speedometer" : "speedometer-outline"}
-              color={color}
-            />
+            <TabBarIcon name={focused ? 'speedometer' : 'speedometer-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="explorer/index"
         options={{
-          title: "Explorer",
+          title: 'Explorer',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "compass" : "compass-outline"}
-              color={color}
-            />
+            <TabBarIcon name={focused ? 'compass' : 'compass-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="stats/index"
         options={{
-          title: "Stats",
+          title: 'Stats',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "stats-chart" : "stats-chart-outline"}
-              color={color}
-            />
+            <TabBarIcon name={focused ? 'stats-chart' : 'stats-chart-outline'} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="profile/index"
         options={{
-          title: "Profile",
+          title: 'Profile',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "person-circle" : "person-circle-outline"}
-              color={color}
-            />
+            <TabBarIcon name={focused ? 'person-circle' : 'person-circle-outline'} color={color} />
           ),
         }}
       />

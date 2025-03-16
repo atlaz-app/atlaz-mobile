@@ -1,10 +1,6 @@
-import { create } from "zustand";
-import {
-  TrackerMode,
-  TrackerMuscle,
-  TrackerOptimization,
-} from "@/enums/Common";
-import { Preset } from "@/types";
+import { create } from 'zustand';
+import { TrackerMode, TrackerMuscle, TrackerOptimization } from '@/enums/Common';
+import { Preset } from '@/types';
 
 interface PresetState {
   muscle: TrackerMuscle;

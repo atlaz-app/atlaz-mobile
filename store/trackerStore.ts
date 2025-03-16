@@ -1,8 +1,8 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { secureStore } from "./middleware";
-import { TrackerMode } from "@/enums/Common";
-import { Preset } from "@/types";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { secureStore } from './middleware';
+import { TrackerMode } from '@/enums/Common';
+import { Preset } from '@/types';
 
 interface TrackerState {
   sessionBase?: number;
@@ -15,14 +15,12 @@ export const useTrackerStore = create<TrackerState>()(
   persist(
     (set) => ({
       mode: TrackerMode.Blind,
-      setSessionBase: (sessionBase?: number) =>
-        set((state) => ({ sessionBase })),
+      setSessionBase: (sessionBase?: number) => set({ sessionBase }),
       setConfig: (config: Preset) => set({ config }),
     }),
     {
-      name: "tracker-secure-storage",
+      name: 'tracker-secure-storage',
       storage: secureStore,
-      partialize: (state) => {},
-    }
-  )
+    },
+  ),
 );

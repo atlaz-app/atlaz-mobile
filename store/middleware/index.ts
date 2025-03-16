@@ -1,1 +1,1 @@
-export * from "./persistSecureStorage";
+export * from './persistSecureStorage';

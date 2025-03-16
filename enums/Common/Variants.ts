@@ -1,21 +1,21 @@
 export enum TrackerMode {
-  Blind = "Blind",
-  Visual = "Visual",
+  Blind = 'Blind',
+  Visual = 'Visual',
 }
 
 export enum TrackerMuscle {
-  Biceps = "Biceps",
-  Triceps = "Triceps",
-  Deltoid = "Deltoid",
+  Biceps = 'Biceps',
+  Triceps = 'Triceps',
+  Deltoid = 'Deltoid',
 }
 export enum TrackerOptimization {
-  Strength = "Strength",
-  Hypertrophy = "Hypertrophy",
-  Freestyle = "Freestyle",
+  Strength = 'Strength',
+  Hypertrophy = 'Hypertrophy',
+  Freestyle = 'Freestyle',
 }
 
 export enum PresetParam {
-  Muscle = "Muscle",
-  Mode = "Mode",
-  Optimization = "Optimization",
+  Muscle = 'Muscle',
+  Mode = 'Mode',
+  Optimization = 'Optimization',
 }

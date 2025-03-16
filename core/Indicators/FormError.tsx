@@ -1,20 +1,5 @@
-import React from "react";
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  Button,
-  TextInput,
-  Keyboard,
-} from "react-native";
-
-import clsx from "clsx";
-
-import { Controller } from "react-hook-form";
+import React from 'react';
+import { View, Text } from 'react-native';
 
 type FormErrorProps = {
   message?: string;

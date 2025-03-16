@@ -1,1 +1,1 @@
-export * from "./getBatteryTimeRemaining";
+export * from './getBatteryTimeRemaining';

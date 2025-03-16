@@ -1,2 +1,2 @@
-export * from "./tracker";
-export * from "./session";
+export * from './session';
+export * from './tracker';

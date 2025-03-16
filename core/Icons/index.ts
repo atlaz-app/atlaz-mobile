@@ -1,2 +1,2 @@
-export * from "./ConnectedSensorIcon";
-export * from "./DisconnectedSensorIcon";
+export * from './ConnectedSensorIcon';
+export * from './DisconnectedSensorIcon';

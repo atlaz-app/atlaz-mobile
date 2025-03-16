@@ -1,19 +1,7 @@
-import React from "react";
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  Button,
-  TextInput,
-  Keyboard,
-  ActivityIndicator,
-} from "react-native";
+import React from 'react';
+import { Text, Pressable, ActivityIndicator } from 'react-native';
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
 type BaseButtonProps = {
   color?: string;
@@ -23,32 +11,18 @@ type BaseButtonProps = {
   onPress: () => void;
 };
 
-export const BaseButton = ({
-  isLoading = false,
-  className,
-  onPress,
-  content,
-  color,
-}: BaseButtonProps) => {
+export const BaseButton = ({ isLoading = false, className, onPress, content, color }: BaseButtonProps) => {
   return (
     <Pressable
       className={clsx(
-        "flex justify-center items-center rounded-xl w-5/6 p-2 border-dashed border-[1px] border-white h-[50]",
-        className
+        'flex justify-center items-center rounded-xl w-5/6 p-2 border-dashed border-[1px] border-white h-[50]',
+        className,
       )}
-      onPress={onPress}
-    >
+      onPress={onPress}>
       {isLoading ? (
         <ActivityIndicator size="small" color="white" />
       ) : (
-        <Text
-          className={clsx(
-            "text-white font-semibold text-lg",
-            color && `text-${color}`
-          )}
-        >
-          {content}
-        </Text>
+        <Text className={clsx('text-white font-semibold text-lg', color && `text-${color}`)}>{content}</Text>
       )}
     </Pressable>
   );

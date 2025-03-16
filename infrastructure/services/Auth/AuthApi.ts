@@ -1,6 +1,5 @@
-import { BackendPaths } from "@/enums/Paths";
-import backendClient from "../../clients/backendClient";
-import { AxiosResponse } from "axios";
+import { BackendPaths } from '@/enums/Paths';
+import { backendClient } from '@/infrastructure/clients';
 
 export type LoginRequestBody = {
   email: string;
@@ -46,11 +45,7 @@ export const AuthApi = {
     }),
 
   verifyEmail: (data: VerifyEmailRequestBody) =>
-    backendClient.post<VerifyEmailResponse>(
-      BackendPaths.AuthVerifyEmail,
-      data,
-      {
-        withAuth: false,
-      }
-    ),
+    backendClient.post<VerifyEmailResponse>(BackendPaths.AuthVerifyEmail, data, {
+      withAuth: false,
+    }),
 };

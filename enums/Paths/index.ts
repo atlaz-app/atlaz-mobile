@@ -1,2 +1,2 @@
-export * from "./BackendPaths";
-export * from "./ScreenPaths";
+export * from './BackendPaths';
+export * from './ScreenPaths';

@@ -1,8 +1,4 @@
-import {
-  TrackerMode,
-  TrackerMuscle,
-  TrackerOptimization,
-} from "@/enums/Common";
+import { TrackerMode, TrackerMuscle, TrackerOptimization } from '@/enums/Common';
 
 export type CreatePresetTabParamList = {
   Muscle: undefined;

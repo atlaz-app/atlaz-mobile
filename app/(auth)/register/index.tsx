@@ -1,38 +1,21 @@
-import { router } from "expo-router";
-import React from "react";
-import {
-  Button,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Image,
-  Platform,
-  View,
-  Pressable,
-  TextInput,
-  Keyboard,
-  KeyboardAvoidingView,
-} from "react-native";
+import { router } from 'expo-router';
+import React from 'react';
 
-import CreateAccount from "@/components/App/Auth/Register/CreateAccount";
-import VerifyEmail from "@/components/App/Auth/Register/VerifyEmail";
-import { RegisterStep } from "@/enums/Common";
+import { Button, ScrollView, Text } from 'react-native';
+
+import { RegisterStep } from '@/enums/Common';
+import { CreateAccount, VerifyEmail } from '@/components/App/Auth/Register';
 
 export default function RegisterScreen() {
   const [email, setEmail] = React.useState<string>();
-  const [registerStep, setRegisterStep] = React.useState(
-    RegisterStep.CreateAccount
-  );
+  const [registerStep, setRegisterStep] = React.useState(RegisterStep.CreateAccount);
 
   return (
     <ScrollView
       className="px-4 pt-[84px] w-full h-full"
       keyboardShouldPersistTaps="handled"
-      automaticallyAdjustKeyboardInsets
-    >
-      <Text className="text-white text-[36px] text-center mb-[80px]">
-        {registerStep}
-      </Text>
+      automaticallyAdjustKeyboardInsets>
+      <Text className="text-white text-[36px] text-center mb-[80px]">{registerStep}</Text>
       {registerStep === RegisterStep.CreateAccount && (
         <CreateAccount setEmail={setEmail} setRegisterStep={setRegisterStep} />
       )}
@@ -41,7 +24,7 @@ export default function RegisterScreen() {
       )}
       <Button
         onPress={async () => {
-          router.navigate("/(auth)/login");
+          router.navigate('/(auth)/login');
         }}
         title="Sign In"
         color="white"

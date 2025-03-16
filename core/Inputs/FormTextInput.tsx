@@ -1,20 +1,9 @@
-import React from "react";
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  Button,
-  TextInput,
-  Keyboard,
-} from "react-native";
+import React from 'react';
+import { TextInput } from 'react-native';
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
-import { Controller } from "react-hook-form";
+import { Controller } from 'react-hook-form';
 
 type FormTextInputProps = {
   name: string;
@@ -42,8 +31,8 @@ export const FormTextInput = ({
       render={({ field: { onChange, onBlur, value } }) => (
         <TextInput
           className={clsx(
-            "w-5/6 rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-[50]",
-            className
+            'w-5/6 rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-[50]',
+            className,
           )}
           placeholder={placeholder}
           onBlur={onBlur}
@@ -52,8 +41,8 @@ export const FormTextInput = ({
           autoCorrect={autoCorrect}
           textContentType={textContentType}
           keyboardType={keyboardType}
-          cursorColor={"white"}
-          selectionColor={"white"}
+          cursorColor={'white'}
+          selectionColor={'white'}
         />
       )}
     />

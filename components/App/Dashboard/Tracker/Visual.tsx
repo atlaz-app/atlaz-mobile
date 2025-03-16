@@ -1,44 +1,22 @@
-import {
-  Platform,
-  Button,
-  View,
-  Text,
-  Dimensions,
-  ScrollView,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
-import React from "react";
+import React from 'react';
+import { LineChart } from 'react-native-gifted-charts';
+import { Button, Dimensions, Pressable, Text, View } from 'react-native';
 
-import { Link, router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from 'expo-router';
 
-import {
-  CallibriSensor,
-  CallibriSignalType,
-  Sensor,
-  SensorAccelerometerSensitivity,
-  SensorADCInput,
-  SensorCommand,
-  SensorFamily,
-  SensorFeature,
-  SensorFilter,
-  SensorGain,
-  SensorSamplingFrequency,
-} from "react-native-neurosdk2";
+import { SensorCommand, SensorFilter } from 'react-native-neurosdk2';
 
-import { LineChart } from "react-native-gifted-charts";
-import { useGlobalStore } from "@/store";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { useTrackerStore } from "@/store/trackerStore";
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { LinearGradient } from "expo-linear-gradient";
-import clsx from "clsx";
+import clsx from 'clsx';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useGlobalStore, useTrackerStore } from '@/store';
 
-const screenWidth = Dimensions.get("window").width;
+const screenWidth = Dimensions.get('window').width;
 
 const defaultEnvelope = Array.from({ length: 50 }, () => ({ value: 0.0009 }));
 
-export default function VisualTracker() {
+export const VisualTracker = () => {
   const { activeSensor, sensorList } = useGlobalStore();
 
   const sensor = sensorList?.[activeSensor!].sensor;
@@ -47,23 +25,16 @@ export default function VisualTracker() {
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<{ value: number }[]>(defaultEnvelope);
-  const [envelope, setEnvelope] =
-    React.useState<{ value: number }[]>(defaultEnvelope);
+  const [envelope, setEnvelope] = React.useState<{ value: number }[]>(defaultEnvelope);
 
   const [totalReps, setTotalReps] = React.useState(0);
   const [effectiveReps, setEffectiveReps] = React.useState(0);
 
   const [isTracking, setTracking] = React.useState(false);
-  const [muscleState, setMuscleState] = React.useState("relaxed");
+  const [muscleState, setMuscleState] = React.useState('relaxed');
 
-  const [facing, setFacing] = React.useState<CameraType>("front");
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = React.useRef<CameraView>(null);
-  const [imageUri, setImageUri] = React.useState<string>();
-
-  const toggleCameraFacing = () => {
-    setFacing((current) => (current === "back" ? "front" : "back"));
-  };
 
   const startTracking = async () => {
     sensor?.AddEnvelopeDataChanged((data) => {
@@ -98,7 +69,7 @@ export default function VisualTracker() {
       await sensor?.execute(SensorCommand.StartEnvelope);
       setTracking(true);
     } catch (e) {
-      console.log("Failed start envelope:", e);
+      console.log('Failed start envelope:', e);
     }
   };
 
@@ -109,49 +80,42 @@ export default function VisualTracker() {
       setTracking(false);
       setTotalReps(0);
       setEffectiveReps(0);
-      setMuscleState("relaxed");
+      setMuscleState('relaxed');
       sampleCountRef.current = 0;
     } catch (e) {
-      console.log("Failed start envelope:", e);
+      console.log('Failed start envelope:', e);
     }
   };
 
   React.useEffect(() => {
-    if (
-      sessionBase &&
-      envelope?.[envelope.length - 1]?.value > sessionBase * 10 &&
-      muscleState === "relaxed"
-    ) {
-      setMuscleState("regular");
+    if (sessionBase && envelope?.[envelope.length - 1]?.value > sessionBase * 10 && muscleState === 'relaxed') {
+      setMuscleState('regular');
     }
 
-    if (
-      sessionBase &&
-      envelope?.[envelope.length - 1]?.value > sessionBase * 35
-    ) {
-      setMuscleState("effective");
+    if (sessionBase && envelope?.[envelope.length - 1]?.value > sessionBase * 35) {
+      setMuscleState('effective');
     }
 
     if (
       sessionBase &&
       envelope?.[envelope.length - 1]?.value < sessionBase * 4 &&
-      (muscleState === "regular" || muscleState === "effective")
+      (muscleState === 'regular' || muscleState === 'effective')
     ) {
-      setMuscleState("relaxed");
+      setMuscleState('relaxed');
       setTotalReps(totalReps + 1);
 
-      if (muscleState === "effective") {
+      if (muscleState === 'effective') {
         setEffectiveReps(effectiveReps + 1);
       }
     }
-  }, [envelope]);
+  }, [envelope, effectiveReps, muscleState, sessionBase, totalReps]);
 
   useFocusEffect(
     React.useCallback(() => {
       return () => {
         setSessionBase(undefined);
       };
-    }, [])
+    }, [setSessionBase]),
   );
 
   if (!permission) {
@@ -177,31 +141,23 @@ export default function VisualTracker() {
     <Pressable onPress={stopTracking}>
       <View className="w-full h-full bg-black">
         <View className="h-2/3 w-full top-0">
-          <CameraView facing={facing} ref={cameraRef}>
+          <CameraView ref={cameraRef}>
             <View className="h-full flex items-end flex-row w-full justify-center">
-              <View
-                className={clsx(
-                  "absolute top-24 flex flex-row items-center gap-2",
-                  !isTracking && "hidden"
-                )}
-              >
+              <View className={clsx('absolute top-24 flex flex-row items-center gap-2', !isTracking && 'hidden')}>
                 <View className="bg-red-500 w-4 h-4 rounded-full"></View>
-                <Text className="text-black font-semibold text-lg">
-                  Tap anywhere to stop
-                </Text>
+                <Text className="text-black font-semibold text-lg">Tap anywhere to stop</Text>
               </View>
               <LinearGradient
-                colors={["transparent", "rgba(0,0,0,1)"]}
+                colors={['transparent', 'rgba(0,0,0,1)']}
                 locations={[0, 0.8]}
                 style={{
                   flex: 1,
                   gap: 84,
-                  flexDirection: "row",
-                  justifyContent: "center",
+                  flexDirection: 'row',
+                  justifyContent: 'center',
                   paddingTop: 128,
                   paddingBottom: 16,
-                }}
-              >
+                }}>
                 <View className="flex items-start">
                   <Text className="text-white text-3xl">{totalReps}</Text>
                   <Text className="text-white/50">Total</Text>
@@ -236,25 +192,18 @@ export default function VisualTracker() {
             hideAxesAndRules
             hideYAxisText
             yAxisLabelWidth={0}
-            color={"white"}
+            color={'white'}
           />
         ) : (
           <View
             className={clsx(
-              "flex flex-row justify-between items-center mb-12  px-8 py-2 w-full h-1/3",
-              isTracking && "invisible pointer-events-none"
-            )}
-          >
-            <Pressable
-              onPress={() =>
-                router.navigate("/(dashboard)/tracker/setup/preset-list")
-              }
-            >
+              'flex flex-row justify-between items-center mb-12  px-8 py-2 w-full h-1/3',
+              isTracking && 'invisible pointer-events-none',
+            )}>
+            <Pressable onPress={() => router.navigate('/(dashboard)/tracker/setup/preset-list')}>
               <View className="flex flex-row gap-4 items-center">
                 <Ionicons size={24} color="white" name="settings-outline" />
-                <Text className="text-white text-2xl font-semibold">
-                  {config?.name || "Workout"}
-                </Text>
+                <Text className="text-white text-2xl font-semibold">{config?.name || 'Workout'}</Text>
               </View>
             </Pressable>
             <Pressable onPress={startTracking}>
@@ -267,4 +216,4 @@ export default function VisualTracker() {
       </View>
     </Pressable>
   );
-}
+};

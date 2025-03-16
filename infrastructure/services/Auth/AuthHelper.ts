@@ -1,6 +1,6 @@
-import { useAuthStore } from "@/store";
-import { AuthApi, LoginRequestBody, RegisterRequestBody } from "./AuthApi";
-import { RegisterForm } from "@/forms";
+import { AuthApi, LoginRequestBody } from './AuthApi';
+import { useAuthStore } from '@/store';
+import { RegisterForm } from '@/forms';
 
 export const AuthHelper = {
   login: async (data: LoginRequestBody): Promise<boolean> => {
@@ -20,7 +20,7 @@ export const AuthHelper = {
   },
   register: async (data: RegisterForm): Promise<string | undefined> => {
     try {
-      const { confirmPassword, age, experienceYears, ...rest } = data;
+      const { age, experienceYears, ...rest } = data;
 
       const registerRequestBody = {
         ...rest,
@@ -36,10 +36,7 @@ export const AuthHelper = {
     }
   },
 
-  verifyEmail: async (data: {
-    email: string;
-    code: string;
-  }): Promise<boolean> => {
+  verifyEmail: async (data: { email: string; code: string }): Promise<boolean> => {
     try {
       const verifyEmailResponse = await AuthApi.verifyEmail(data);
 

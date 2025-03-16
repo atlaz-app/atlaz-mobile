@@ -1,34 +1,12 @@
-import React from "react";
-import {
-  ScrollView,
-  View,
-  Image,
-  Text,
-  Pressable,
-  Modal,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  Button,
-} from "react-native";
-import { BaseButton } from "@/core/Buttons";
-import { Link, router, useRouter } from "expo-router";
-import { useTrackerStore } from "@/store/trackerStore";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { TrackerMode } from "@/enums/Common";
-import { useGlobalStore } from "@/store";
-import {
-  CallibriSignalType,
-  SensorADCInput,
-  SensorCommand,
-  SensorDataOffset,
-  SensorFilter,
-  SensorGain,
-} from "react-native-neurosdk2";
-import Svg, { Circle } from "react-native-svg";
+import React from 'react';
 
-export default function Calibrator() {
-  const router = useRouter();
+import Svg, { Circle } from 'react-native-svg';
+import { Pressable, Text, View } from 'react-native';
+import { SensorCommand, SensorFilter } from 'react-native-neurosdk2';
+import { useTrackerStore } from '@/store/trackerStore';
+import { useGlobalStore } from '@/store';
+
+export const Calibrator = () => {
   const { sessionBase, setSessionBase } = useTrackerStore();
   const { activeSensor, sensorList } = useGlobalStore();
 
@@ -92,7 +70,7 @@ export default function Calibrator() {
       await sensor?.execute(SensorCommand.StartEnvelope);
       setTracking(true);
     } catch (e) {
-      console.log("Failed start envelope:", e);
+      console.log('Failed start envelope:', e);
     }
   };
 
@@ -108,15 +86,7 @@ export default function Calibrator() {
       <View className="w-full h-full pt-[180px] flex items-center bg-black">
         <Svg height="50%" width="50%" viewBox="0 0 100 100">
           {/* Background circle (gray outline) */}
-          <Circle
-            cx="50"
-            cy="50"
-            r={CIRCLE_RADIUS}
-            stroke="gray"
-            opacity={0.5}
-            strokeWidth="10"
-            fill="transparent"
-          />
+          <Circle cx="50" cy="50" r={CIRCLE_RADIUS} stroke="gray" opacity={0.5} strokeWidth="10" fill="transparent" />
           {/* Progress circle (white, fills as calibration progresses) */}
           <Circle
             cx="50"
@@ -126,25 +96,17 @@ export default function Calibrator() {
             strokeWidth="10"
             fill="transparent"
             strokeDasharray={CIRCLE_CIRCUMFERENCE}
-            strokeDashoffset={
-              isTracking ? strokeDashoffset : CIRCLE_CIRCUMFERENCE
-            }
+            strokeDashoffset={isTracking ? strokeDashoffset : CIRCLE_CIRCUMFERENCE}
             rotation="-90" // Start from the top
             origin="50, 50" // Rotate around the center
           />
         </Svg>
         <Text className="text-white text-center text-4xl font-bold w-3/4">
-          {isTracking ? "Calibrating..." : "Calibrate device before starting"}
+          {isTracking ? 'Calibrating...' : 'Calibrate device before starting'}
         </Text>
-        <Text className="text-white/50 text-base mt-3">
-          Keep muscle still & relaxed
-        </Text>
-        {!isTracking && (
-          <Text className="text-white text-lg mt-20">
-            Tap anywhere to start
-          </Text>
-        )}
+        <Text className="text-white/50 text-base mt-3">Keep muscle still & relaxed</Text>
+        {!isTracking && <Text className="text-white text-lg mt-20">Tap anywhere to start</Text>}
       </View>
     </Pressable>
   );
-}
+};

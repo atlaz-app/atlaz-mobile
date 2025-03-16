@@ -1,73 +1,28 @@
-import React from "react";
-import {
-  ScrollView,
-  View,
-  Image,
-  Text,
-  Pressable,
-  Modal,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  Button,
-  SafeAreaView,
-  FlatList,
-} from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Video, ResizeMode } from "expo-av";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import React from 'react';
+import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 
-import {
-  ButtonText,
-  ButtonSpinner,
-  ButtonIcon,
-  ButtonGroup,
-} from "@/components/ui/button";
-import { SensorList, useAuthStore, useGlobalStore } from "@/store";
-import { UserApi } from "@/infrastructure/services/User";
-import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { scanner } from "@/infrastructure/clients";
-import {
-  CallibriSensor,
-  CallibriSignalType,
-  Sensor,
-  SensorAccelerometerSensitivity,
-  SensorADCInput,
-  SensorCommand,
-  SensorFamily,
-  SensorFeature,
-  SensorGain,
-  SensorInfo,
-  SensorSamplingFrequency,
-} from "react-native-neurosdk2";
-import { BaseButton } from "@/core/Buttons";
-import { Link, router } from "expo-router";
-import useSWR from "swr";
-import { BackendPaths } from "@/enums/Paths";
-import clsx from "clsx";
-import { getBatteryTimeRemaining } from "@/utils";
-import { ConnectedSensorIcon, DisconnectedSensorIcon } from "@/core/Icons";
+import clsx from 'clsx';
+import { router } from 'expo-router';
+import { CallibriSensor } from 'react-native-neurosdk2';
+import useSWR from 'swr';
+import { ConnectedSensorIcon, DisconnectedSensorIcon } from '@/core/Icons';
+import { BackendPaths } from '@/enums/Paths';
+import { scanner } from '@/infrastructure/clients';
+import { UserApi } from '@/infrastructure/services/User';
+import { SensorList, useAuthStore, useGlobalStore } from '@/store';
+import { getBatteryTimeRemaining } from '@/utils';
 
 export default function ProfileTab() {
-  const {
-    authenticated,
-    setAuthenticated,
-    username,
-    setAccessToken,
-    setRefreshToken,
-  } = useAuthStore();
+  const { setAuthenticated, setAccessToken, setRefreshToken } = useAuthStore();
 
-  const { activeSensor, sensorList, setActiveSensor, setSensorList } =
-    useGlobalStore();
+  const { activeSensor, sensorList, setActiveSensor, setSensorList } = useGlobalStore();
 
   const [isConnecting, setIsConnecting] = React.useState(false);
 
-  console.log("test", sensorList?.[activeSensor!]?.sensor?.getState());
+  console.log('test', sensorList?.[activeSensor!]?.sensor?.getState());
 
-  const {
-    data: userInfo,
-    error,
-    mutate,
-  } = useSWR(BackendPaths.UserInfo, async () => {
+  const { data: userInfo } = useSWR(BackendPaths.UserInfo, async () => {
     const response = await UserApi.session.getUserInfo();
     return response.data;
   });
@@ -87,18 +42,16 @@ export default function ProfileTab() {
     }, {} as SensorList);
 
     setSensorList(sensorListingMapping);
-    console.log("sensorList", sensors);
+    console.log('sensorList', sensors);
   };
 
   const connect = async (sensorAddress: string) => {
     setIsConnecting(true);
-    console.log("connect");
+    console.log('connect');
     const sensorToConnect = sensorList?.[sensorAddress];
 
     if (sensorToConnect?.info) {
-      const newSensor = (await scanner.createSensor(
-        sensorToConnect.info
-      )) as CallibriSensor;
+      const newSensor = (await scanner.createSensor(sensorToConnect.info)) as CallibriSensor;
 
       setSensorList({
         ...sensorList,
@@ -114,7 +67,7 @@ export default function ProfileTab() {
   };
 
   const disconnect = async (sensorAddress: string) => {
-    console.log("disconnect");
+    console.log('disconnect');
     const sensorToDisconnect = sensorList?.[sensorAddress].sensor;
     await sensorToDisconnect?.disconnect();
     await scanner.stop();
@@ -130,21 +83,18 @@ export default function ProfileTab() {
 
   const logout = async () => {
     setAuthenticated(false);
-    setAccessToken("");
-    setRefreshToken("");
+    setAccessToken('');
+    setRefreshToken('');
 
-    router.replace("/(auth)/login");
+    router.replace('/(auth)/login');
   };
 
-  const sensorListArray = Object.entries(sensorList || {}).map(
-    ([address, sensorData]) => ({
-      address,
-      ...sensorData,
-    })
-  );
+  const sensorListArray = Object.entries(sensorList || {}).map(([address, sensorData]) => ({
+    address,
+    ...sensorData,
+  }));
 
-  const lastSensorAddress =
-    sensorListArray?.[sensorListArray?.length - 1]?.address;
+  const lastSensorAddress = sensorListArray?.[sensorListArray?.length - 1]?.address;
 
   return (
     <SafeAreaView className="w-full h-full bg-black">
@@ -152,25 +102,14 @@ export default function ProfileTab() {
         <View className="flex flex-row justify-between items-center">
           <View className="flex flex-row gap-7">
             <View className="bg-white/50 flex items-center justify-center w-[54px] h-[54px] rounded-full">
-              <Text className="text-4xl font-extrabold">
-                {userInfo?.username[0].toUpperCase()}
-              </Text>
+              <Text className="text-4xl font-extrabold">{userInfo?.username[0].toUpperCase()}</Text>
             </View>
             <View className="gap-2 flex justify-center">
-              <Text className="text-white text-base font-semibold">
-                {userInfo?.username}
-              </Text>
-              <Text className="text-white text-sm font-semibold">
-                {userInfo?.email}
-              </Text>
+              <Text className="text-white text-base font-semibold">{userInfo?.username}</Text>
+              <Text className="text-white text-sm font-semibold">{userInfo?.email}</Text>
             </View>
           </View>
-          <Ionicons
-            name="log-out-outline"
-            size={24}
-            color="white"
-            onPress={logout}
-          />
+          <Ionicons name="log-out-outline" size={24} color="white" onPress={logout} />
         </View>
         <View>
           <Text className="text-white text-lg font-semibold ">Sensors</Text>
@@ -180,22 +119,15 @@ export default function ProfileTab() {
               <Pressable onPress={() => connect(sensorData.address)}>
                 <View
                   className={clsx(
-                    "px-3 py-10 shadow-sm border-b-[0.5px] border-solid border-gray-500 flex flex-row gap-8 w-full h-[152px]",
-                    sensorData.address === lastSensorAddress && "!border-black"
-                  )}
-                >
+                    'px-3 py-10 shadow-sm border-b-[0.5px] border-solid border-gray-500 flex flex-row gap-8 w-full h-[152px]',
+                    sensorData.address === lastSensorAddress && '!border-black',
+                  )}>
                   <View className="pt-6">
-                    {sensorData.connected ? (
-                      <ConnectedSensorIcon />
-                    ) : (
-                      <DisconnectedSensorIcon />
-                    )}
+                    {sensorData.connected ? <ConnectedSensorIcon /> : <DisconnectedSensorIcon />}
                   </View>
                   <View className="flex flex-1 h-full justify-between">
                     <View className="flex flex-row justify-between items-center">
-                      <Text className="text-lg font-extrabold mb-1 text-white">
-                        {sensorData.info?.Name}
-                      </Text>
+                      <Text className="text-lg font-extrabold mb-1 text-white">{sensorData.info?.Name}</Text>
                       <Ionicons
                         name="trash-outline"
                         color="white"
@@ -221,16 +153,14 @@ export default function ProfileTab() {
                             {sensorData.sensor?.getBattPower()}%
                           </Text>
                           <Text className="text-sm text-white/50 font-extrabold">
-                            {getBatteryTimeRemaining(
-                              sensorData.sensor.getBattPower()
-                            )}
+                            {getBatteryTimeRemaining(sensorData.sensor.getBattPower())}
                           </Text>
                         </View>
                       </View>
                     ) : (
                       <View>
                         <Text className="text-white/50 font-semibold text-sm -mt-[32px]">
-                          {isConnecting ? "Connecting..." : "Not connected"}
+                          {isConnecting ? 'Connecting...' : 'Not connected'}
                         </Text>
                       </View>
                     )}
@@ -238,19 +168,14 @@ export default function ProfileTab() {
                 </View>
               </Pressable>
             )}
-            ListEmptyComponent={
-              <Text className="text-center py-5 text-base text-gray-600">
-                No presets available
-              </Text>
-            }
+            ListEmptyComponent={<Text className="text-center py-5 text-base text-gray-600">No presets available</Text>}
             className="w-full px-3"
             showsVerticalScrollIndicator={false}
           />
         </View>
         <Pressable
           onPress={scan}
-          className="bg-white p-4 rounded-full absolute bottom-8 right-8 w-[60px] h-[60px] flex items-center justify-center"
-        >
+          className="bg-white p-4 rounded-full absolute bottom-8 right-8 w-[60px] h-[60px] flex items-center justify-center">
           <Ionicons size={32} color="black" name="add" />
         </Pressable>
       </View>

@@ -1,17 +1,10 @@
-export const getBatteryTimeRemaining = (
-  batteryCharge: number,
-  maxBatteryLifeHours: number = 6
-): string => {
+export const getBatteryTimeRemaining = (batteryCharge: number, maxBatteryLifeHours: number = 6): string => {
   // Input validation
-  if (
-    !Number.isFinite(batteryCharge) ||
-    batteryCharge < 0 ||
-    batteryCharge > 100
-  ) {
-    throw new Error("Battery charge must be a number between 0 and 100");
+  if (!Number.isFinite(batteryCharge) || batteryCharge < 0 || batteryCharge > 100) {
+    throw new Error('Battery charge must be a number between 0 and 100');
   }
   if (!Number.isFinite(maxBatteryLifeHours) || maxBatteryLifeHours <= 0) {
-    throw new Error("Maximum battery life must be a positive number");
+    throw new Error('Maximum battery life must be a positive number');
   }
 
   // Calculate remaining hours based on percentage

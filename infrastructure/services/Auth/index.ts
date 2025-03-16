@@ -1,2 +1,2 @@
-export * from "./AuthApi";
-export * from "./AuthHelper";
+export * from './AuthApi';
+export * from './AuthHelper';

@@ -1,22 +1,11 @@
-import React from "react";
-import {
-  StyleSheet,
-  Image,
-  Platform,
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  Button,
-  TextInput,
-  Keyboard,
-} from "react-native";
+import React from 'react';
+import { View, Pressable, TextInput } from 'react-native';
 
-import Icon from "@expo/vector-icons/Ionicons";
+import Icon from '@expo/vector-icons/Ionicons';
 
-import { Controller } from "react-hook-form";
+import { Controller } from 'react-hook-form';
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
 type FormPasswordInputProps = {
   name: string;
@@ -48,9 +37,9 @@ export const FormPasswordInput = ({
             onChangeText={onChange}
             value={value}
             className={clsx(
-              "w-full rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-full",
+              'w-full rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-full',
 
-              className
+              className,
             )}
             textContentType="oneTimeCode"
             secureTextEntry={hidePassword}
@@ -60,13 +49,8 @@ export const FormPasswordInput = ({
           />
           <Pressable
             className="absolute right-0 p-4  top-1/2 transform -translate-y-1/2"
-            onPress={() => setHidePassword(!hidePassword)}
-          >
-            <Icon
-              name={hidePassword ? "eye-off" : "eye"}
-              size={16}
-              color={"white"}
-            />
+            onPress={() => setHidePassword(!hidePassword)}>
+            <Icon name={hidePassword ? 'eye-off' : 'eye'} size={16} color={'white'} />
           </Pressable>
         </View>
       )}

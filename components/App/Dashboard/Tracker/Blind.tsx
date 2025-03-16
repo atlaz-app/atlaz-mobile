@@ -1,44 +1,20 @@
-import {
-  Platform,
-  Button,
-  View,
-  Text,
-  Dimensions,
-  ScrollView,
-  Pressable,
-} from "react-native";
-import React from "react";
+import { View, Text, Dimensions, Pressable } from 'react-native';
+import React from 'react';
 
-import { Link, router, useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from 'expo-router';
 
-import {
-  CallibriSensor,
-  CallibriSignalType,
-  Sensor,
-  SensorAccelerometerSensitivity,
-  SensorADCInput,
-  SensorCommand,
-  SensorDataOffset,
-  SensorFamily,
-  SensorFeature,
-  SensorFilter,
-  SensorGain,
-  SensorSamplingFrequency,
-} from "react-native-neurosdk2";
+import { SensorCommand, SensorFilter } from 'react-native-neurosdk2';
 
-import { LineChart } from "react-native-gifted-charts";
-import { useGlobalStore } from "@/store";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { useTrackerStore } from "@/store/trackerStore";
-import clsx from "clsx";
+import { LineChart } from 'react-native-gifted-charts';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import clsx from 'clsx';
+import { useGlobalStore } from '@/store';
+import { useTrackerStore } from '@/store/trackerStore';
 
-const screenWidth = Dimensions.get("window").width;
+const screenWidth = Dimensions.get('window').width;
 
-export default function BlindTracker() {
-  const defaultEnvelopeRef = Array.from(
-    { length: 50 },
-    () => useTrackerStore.getState().sessionBase!
-  );
+export const BlindTracker = () => {
+  const defaultEnvelopeRef = Array.from({ length: 50 }, () => useTrackerStore.getState().sessionBase!);
   const defaultEnvelope = Array.from({ length: 50 }, () => ({
     value: useTrackerStore.getState().sessionBase!,
   }));
@@ -49,14 +25,13 @@ export default function BlindTracker() {
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<number[]>(defaultEnvelopeRef);
-  const [envelope, setEnvelope] =
-    React.useState<{ value: number }[]>(defaultEnvelope);
+  const [envelope, setEnvelope] = React.useState<{ value: number }[]>(defaultEnvelope);
 
   const [totalReps, setTotalReps] = React.useState(0);
   const [effectiveReps, setEffectiveReps] = React.useState(0);
 
   const [isTracking, setTracking] = React.useState(false);
-  const [muscleState, setMuscleState] = React.useState("relaxed");
+  const [muscleState, setMuscleState] = React.useState('relaxed');
 
   const startTracking = async () => {
     sensor?.AddEnvelopeDataChanged((data) => {
@@ -92,7 +67,7 @@ export default function BlindTracker() {
       await sensor?.execute(SensorCommand.StartEnvelope);
       setTracking(true);
     } catch (e) {
-      console.log("Failed start envelope:", e);
+      console.log('Failed start envelope:', e);
     }
   };
 
@@ -105,42 +80,35 @@ export default function BlindTracker() {
       setTracking(false);
       setTotalReps(0);
       setEffectiveReps(0);
-      setMuscleState("relaxed");
+      setMuscleState('relaxed');
       sampleCountRef.current = 0;
     } catch (e) {
-      console.log("Failed start envelope:", e);
+      console.log('Failed start envelope:', e);
     }
   };
 
   React.useEffect(() => {
-    if (
-      sessionBase &&
-      envelope?.[envelope.length - 1]?.value > sessionBase * 10 &&
-      muscleState === "relaxed"
-    ) {
-      setMuscleState("regular");
+    if (sessionBase && envelope?.[envelope.length - 1]?.value > sessionBase * 10 && muscleState === 'relaxed') {
+      setMuscleState('regular');
     }
 
-    if (
-      sessionBase &&
-      envelope?.[envelope.length - 1]?.value > sessionBase * 35
-    ) {
-      setMuscleState("effective");
+    if (sessionBase && envelope?.[envelope.length - 1]?.value > sessionBase * 35) {
+      setMuscleState('effective');
     }
 
     if (
       sessionBase &&
       envelope?.[envelope.length - 1]?.value < sessionBase * 4 &&
-      (muscleState === "regular" || muscleState === "effective")
+      (muscleState === 'regular' || muscleState === 'effective')
     ) {
-      setMuscleState("relaxed");
+      setMuscleState('relaxed');
       setTotalReps(totalReps + 1);
 
-      if (muscleState === "effective") {
+      if (muscleState === 'effective') {
         setEffectiveReps(effectiveReps + 1);
       }
     }
-  }, [envelope]);
+  }, [envelope, effectiveReps, muscleState, sessionBase, totalReps]);
 
   const graphOffset = sessionBase && sessionBase - sessionBase / 2;
 
@@ -151,7 +119,7 @@ export default function BlindTracker() {
       return () => {
         setSessionBase(undefined);
       };
-    }, [])
+    }, [setSessionBase]),
   );
 
   console.log(sessionBase);
@@ -159,16 +127,9 @@ export default function BlindTracker() {
   return (
     <Pressable onPress={stopTracking}>
       <View className="w-full h-full pt-[180px] flex items-center justify-between bg-black">
-        <View
-          className={clsx(
-            "absolute top-24 flex flex-row items-center gap-2",
-            !isTracking && "hidden"
-          )}
-        >
+        <View className={clsx('absolute top-24 flex flex-row items-center gap-2', !isTracking && 'hidden')}>
           <View className="bg-red-500 w-4 h-4 rounded-full"></View>
-          <Text className="text-white font-semibold text-lg">
-            Tap anywhere to stop
-          </Text>
+          <Text className="text-white font-semibold text-lg">Tap anywhere to stop</Text>
         </View>
 
         <View className="flex flex-row justify-between w-full px-16">
@@ -203,24 +164,17 @@ export default function BlindTracker() {
           hideAxesAndRules
           hideYAxisText
           yAxisLabelWidth={0}
-          color={"white"}
+          color={'white'}
         />
         <View
           className={clsx(
-            "flex flex-row justify-between items-center mb-12  px-8 py-2 w-full rounded-full",
-            isTracking && "invisible pointer-events-none"
-          )}
-        >
-          <Pressable
-            onPress={() =>
-              router.navigate("/(dashboard)/tracker/setup/preset-list")
-            }
-          >
+            'flex flex-row justify-between items-center mb-12  px-8 py-2 w-full rounded-full',
+            isTracking && 'invisible pointer-events-none',
+          )}>
+          <Pressable onPress={() => router.navigate('/(dashboard)/tracker/setup/preset-list')}>
             <View className="flex flex-row gap-4 items-center">
               <Ionicons size={24} color="white" name="settings-outline" />
-              <Text className="text-white text-2xl font-semibold">
-                {config?.name || "Workout"}
-              </Text>
+              <Text className="text-white text-2xl font-semibold">{config?.name || 'Workout'}</Text>
             </View>
           </Pressable>
           <Pressable onPress={startTracking}>
@@ -232,4 +186,4 @@ export default function BlindTracker() {
       </View>
     </Pressable>
   );
-}
+};

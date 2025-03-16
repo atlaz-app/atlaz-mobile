@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { secureStore } from "./middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { secureStore } from './middleware';
 
 interface AuthState {
   username?: string;
@@ -17,21 +17,18 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       authenticated: false,
-      setUsername: (username: string) => set((state) => ({ username })),
-      setAccessToken: (accessToken: string) =>
-        set((state) => ({ accessToken })),
-      setRefreshToken: (refreshToken: string) =>
-        set((state) => ({ refreshToken })),
-      setAuthenticated: (isAuthenticated: boolean) =>
-        set((state) => ({ authenticated: isAuthenticated })),
+      setUsername: (username: string) => set({ username }),
+      setAccessToken: (accessToken: string) => set({ accessToken }),
+      setRefreshToken: (refreshToken: string) => set({ refreshToken }),
+      setAuthenticated: (isAuthenticated: boolean) => set({ authenticated: isAuthenticated }),
     }),
     {
-      name: "auth-secure-storage",
+      name: 'auth-secure-storage',
       storage: secureStore,
-      partialize: (state) => {
-        accessToken: state.accessToken;
-        refreshToken: state.refreshToken;
-      },
-    }
-  )
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+      }),
+    },
+  ),
 );

@@ -1,38 +1,13 @@
-import React from "react";
-import {
-  ScrollView,
-  View,
-  Image,
-  Text,
-  Pressable,
-  Modal,
-  Alert,
-  TouchableOpacity,
-  StyleSheet,
-  Button,
-  Dimensions,
-} from "react-native";
+import React from 'react';
+import { ScrollView, View, Text, Pressable, Dimensions } from 'react-native';
 
-import { BaseButton } from "@/core/Buttons";
-import { Link, router, useRouter } from "expo-router";
-import { useTrackerStore } from "@/store/trackerStore";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { TrackerMode, TrackerMuscle } from "@/enums/Common";
-import { useGlobalStore, usePresetStore } from "@/store";
-import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
-import { CreatePresetTabParamList } from "@/types";
-import clsx from "clsx";
+import clsx from 'clsx';
+import { TrackerMuscle } from '@/enums/Common';
+import { usePresetStore } from '@/store';
 
-export type SetupCreatePresetMuscleProps = NativeStackScreenProps<
-  CreatePresetTabParamList,
-  "Muscle"
->;
-
-export default function SetupCreatePresetMuscle({
-  navigation,
-}: SetupCreatePresetMuscleProps) {
+export default function SetupCreatePresetMuscle() {
   const { muscle, setMuscle } = usePresetStore();
-  const { width } = Dimensions.get("window");
+  const { width } = Dimensions.get('window');
   const MUSCLE_ITEM_SIZE = (width - 32 - 24) / 3;
 
   return (
@@ -42,17 +17,14 @@ export default function SetupCreatePresetMuscle({
           <Pressable onPress={() => setMuscle(muscleOption)} key={muscleOption}>
             <View
               className={clsx(
-                "bg-gray-800 rounded-lg flex items-center justify-center border-solid border-[1px] border-gray-800",
-                muscleOption === muscle && "!bg-gray-500 !border-white"
+                'bg-gray-800 rounded-lg flex items-center justify-center border-solid border-[1px] border-gray-800',
+                muscleOption === muscle && '!bg-gray-500 !border-white',
               )}
               style={{
                 width: MUSCLE_ITEM_SIZE,
                 height: MUSCLE_ITEM_SIZE,
-              }}
-            ></View>
-            <Text className="text-white text-center leading-8">
-              {muscleOption}
-            </Text>
+              }}></View>
+            <Text className="text-white text-center leading-8">{muscleOption}</Text>
           </Pressable>
         ))}
       </View>
