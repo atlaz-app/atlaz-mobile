@@ -2,18 +2,18 @@ import { router } from 'expo-router';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
-import { BaseButton } from '@/core/Buttons';
-import { FormError } from '@/core/Indicators';
-import { FormTextInput } from '@/core/Inputs';
-import { RegisterStep } from '@/enums/Common';
+import { BaseButton } from '@/components/Buttons';
+import { FormError } from '@/components/Indicators';
+import { FormTextInput } from '@/components/Inputs';
+import { RegistrationStep } from '@/enums/Common';
 import { AuthHelper } from '@/infrastructure/services/Auth';
 
-type RegisterStepProps = {
+type RegistrationStepProps = {
   email: string;
-  setRegisterStep: (registerStep: RegisterStep) => void;
+  setRegistrationStep: (registrationStep: RegistrationStep) => void;
 };
 
-export const VerifyEmail = ({ email }: RegisterStepProps) => {
+export const VerifyEmail = ({ email }: RegistrationStepProps) => {
   const [isLoading, setLoading] = React.useState(false);
 
   const {

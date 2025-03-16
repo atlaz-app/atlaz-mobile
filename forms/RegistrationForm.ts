@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const registerSchema = z
+export const registrationSchema = z
   .object({
     username: z
       .string({ message: 'Username is required!' })
@@ -22,7 +22,7 @@ export const registerSchema = z
     message: 'Passwords must match!',
   });
 
-export type RegisterForm = {
+export type RegistrationForm = {
   username: string;
   email: string;
   age: string;

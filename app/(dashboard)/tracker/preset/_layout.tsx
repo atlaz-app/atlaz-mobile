@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 
-export default function Tracker() {
+export default function TrackerPresetLayout() {
   return (
     <Stack
       screenOptions={{
@@ -15,12 +15,12 @@ export default function Tracker() {
         headerShadowVisible: false,
       }}>
       <Stack.Screen
-        name="preset-list/index"
+        name="saved"
         options={{
           headerShown: false,
         }}
       />
-      <Stack.Screen name="create-preset" options={{ headerShown: true, headerBackTitleVisible: false }} />
+      <Stack.Screen name="new" options={{ headerShown: true, headerBackTitleVisible: false }} />
     </Stack>
   );
 }

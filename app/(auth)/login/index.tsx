@@ -5,13 +5,13 @@ import { Button, ScrollView, Text, View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
-import { BaseButton } from '@/core/Buttons';
-import { FormError } from '@/core/Indicators';
-import { FormPasswordInput, FormTextInput } from '@/core/Inputs';
+import { BaseButton } from '@/components/Buttons';
+import { FormError } from '@/components/Indicators';
+import { FormPasswordInput, FormTextInput } from '@/components/Inputs';
 import { LoginForm, loginSchema } from '@/forms';
 import { AuthHelper } from '@/infrastructure/services/Auth';
 
-export default function LoginScreen() {
+export default function Login() {
   const [isLoading, setLoading] = React.useState(false);
   const [submissionErrorMessage, setSubmissionErrorMessage] = React.useState('');
 
@@ -21,6 +21,14 @@ export default function LoginScreen() {
     formState: { errors },
     reset,
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        reset();
+      };
+    }, [reset]),
+  );
 
   const login = handleSubmit(async (data: LoginForm) => {
     setLoading(true);
@@ -34,14 +42,6 @@ export default function LoginScreen() {
     setLoading(false);
     router.navigate('/(dashboard)/tracker');
   });
-
-  useFocusEffect(
-    React.useCallback(() => {
-      return () => {
-        reset();
-      };
-    }, [reset]),
-  );
 
   return (
     <ScrollView
@@ -64,7 +64,7 @@ export default function LoginScreen() {
         <BaseButton isLoading={isLoading} onPress={login} content="Sign In" />
         <Button
           onPress={async () => {
-            router.navigate('/(auth)/register');
+            router.navigate('/(auth)/registration');
           }}
           title="Sign Up"
           color="white"></Button>

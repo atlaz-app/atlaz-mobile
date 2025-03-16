@@ -20,7 +20,7 @@ const Tab = createMaterialTopTabNavigator<CreatePresetTabParamList>();
 
 type TabNavigationProp = MaterialTopTabNavigationProp<CreatePresetTabParamList>;
 
-export default function MyTabs() {
+export default function TrackerNewPresetLayout() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<TabNavigationProp>();
   const { name, getPreset } = usePresetStore();
@@ -61,7 +61,7 @@ export default function MyTabs() {
 
             setConfig(newPreset);
 
-            router.navigate('/(dashboard)/tracker/track');
+            router.navigate('/(dashboard)/tracker/monitor');
           },
         };
       default:

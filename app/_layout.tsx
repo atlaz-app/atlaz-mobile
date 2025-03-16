@@ -3,10 +3,8 @@ import '../global.css';
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
 
-export default function Root() {
+export default function RootLayout() {
   const { authenticated } = useAuthStore();
-
-  console.log('root', authenticated);
 
   React.useEffect(() => {
     router.push(authenticated ? '/(dashboard)/explorer' : '/(auth)/login');

@@ -11,7 +11,7 @@ import { BackendPaths } from '@/enums/Paths';
 import { UserApi } from '@/infrastructure/services/User';
 import { Preset } from '@/types';
 
-export default function PresetList() {
+export default function Saved() {
   const router = useRouter();
   const { setConfig } = useTrackerStore();
 
@@ -22,7 +22,7 @@ export default function PresetList() {
 
   const pickPreset = async (preset: Preset) => {
     setConfig(preset);
-    router.navigate('/(dashboard)/tracker/track');
+    router.navigate('/(dashboard)/tracker/monitor');
   };
 
   const deletePreset = async (presetId: number) => {

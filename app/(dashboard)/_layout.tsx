@@ -1,7 +1,7 @@
 import { Tabs, Redirect } from 'expo-router';
 import React from 'react';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+import { TabBarIcon } from '@/components/Expo/navigation/TabBarIcon';
 import { useAuthStore } from '@/store/authStore';
 
 export default function DashboardLayout() {

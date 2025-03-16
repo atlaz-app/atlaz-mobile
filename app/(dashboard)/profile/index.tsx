@@ -6,14 +6,14 @@ import clsx from 'clsx';
 import { router } from 'expo-router';
 import { CallibriSensor } from 'react-native-neurosdk2';
 import useSWR from 'swr';
-import { ConnectedSensorIcon, DisconnectedSensorIcon } from '@/core/Icons';
+import { ConnectedSensorIcon, DisconnectedSensorIcon } from '@/components/Icons';
 import { BackendPaths } from '@/enums/Paths';
 import { scanner } from '@/infrastructure/clients';
 import { UserApi } from '@/infrastructure/services/User';
 import { SensorList, useAuthStore, useGlobalStore } from '@/store';
 import { getBatteryTimeRemaining } from '@/utils';
 
-export default function ProfileTab() {
+export default function Profile() {
   const { setAuthenticated, setAccessToken, setRefreshToken } = useAuthStore();
 
   const { activeSensor, sensorList, setActiveSensor, setSensorList } = useGlobalStore();

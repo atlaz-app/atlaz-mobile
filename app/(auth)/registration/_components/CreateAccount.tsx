@@ -4,18 +4,18 @@ import { View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { AuthHelper } from '@/infrastructure/services/Auth';
-import { RegisterForm, registerSchema } from '@/forms';
-import { FormPasswordInput, FormTextInput } from '@/core/Inputs';
-import { BaseButton } from '@/core/Buttons';
-import { FormError } from '@/core/Indicators';
-import { RegisterStep } from '@/enums/Common';
+import { RegistrationForm, registrationSchema } from '@/forms';
+import { FormPasswordInput, FormTextInput } from '@/components/Inputs';
+import { BaseButton } from '@/components/Buttons';
+import { FormError } from '@/components/Indicators';
+import { RegistrationStep } from '@/enums/Common';
 
-type RegisterStepProps = {
+type RegistrationStepProps = {
   setEmail: (email: string) => void;
-  setRegisterStep: (registerStep: RegisterStep) => void;
+  setRegistrationStep: (registrationStep: RegistrationStep) => void;
 };
 
-export const CreateAccount = ({ setEmail, setRegisterStep }: RegisterStepProps) => {
+export const CreateAccount = ({ setEmail, setRegistrationStep }: RegistrationStepProps) => {
   const [isLoading, setLoading] = React.useState(false);
 
   const {
@@ -24,9 +24,9 @@ export const CreateAccount = ({ setEmail, setRegisterStep }: RegisterStepProps) 
     formState: { errors },
     setError,
     clearErrors,
-  } = useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
+  } = useForm<RegistrationForm>({ resolver: zodResolver(registrationSchema) });
 
-  const createAccount = handleSubmit(async (data: RegisterForm) => {
+  const createAccount = handleSubmit(async (data: RegistrationForm) => {
     setLoading(true);
     const createdAccountEmail = await AuthHelper.register(data);
 
@@ -37,7 +37,7 @@ export const CreateAccount = ({ setEmail, setRegisterStep }: RegisterStepProps) 
     }
 
     setEmail(createdAccountEmail);
-    setRegisterStep(RegisterStep.VerifyEmail);
+    setRegistrationStep(RegistrationStep.VerifyEmail);
     setLoading(false);
   });
 

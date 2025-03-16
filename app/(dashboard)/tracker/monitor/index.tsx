@@ -1,9 +1,9 @@
 import React from 'react';
+import { BlindTracker, Calibrator, VisualTracker } from './_components';
 import { useTrackerStore } from '@/store/trackerStore';
 import { TrackerMode } from '@/enums/Common';
-import { BlindTracker, Calibrator, VisualTracker } from '@/components/App/Dashboard/Tracker';
 
-export default function TrackScreen() {
+export default function TrackerMonitor() {
   const { config, sessionBase } = useTrackerStore();
 
   if (!sessionBase) {

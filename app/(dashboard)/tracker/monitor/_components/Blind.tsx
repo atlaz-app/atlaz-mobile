@@ -171,7 +171,7 @@ export const BlindTracker = () => {
             'flex flex-row justify-between items-center mb-12  px-8 py-2 w-full rounded-full',
             isTracking && 'invisible pointer-events-none',
           )}>
-          <Pressable onPress={() => router.navigate('/(dashboard)/tracker/setup/preset-list')}>
+          <Pressable onPress={() => router.navigate('/(dashboard)/tracker/setup')}>
             <View className="flex flex-row gap-4 items-center">
               <Ionicons size={24} color="white" name="settings-outline" />
               <Text className="text-white text-2xl font-semibold">{config?.name || 'Workout'}</Text>

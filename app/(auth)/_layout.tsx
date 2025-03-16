@@ -10,7 +10,7 @@ export default function AuthLayout() {
         contentStyle: { backgroundColor: '#000000' },
       }}>
       <Stack.Screen name="login/index" />
-      <Stack.Screen name="register/index" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="registration/index" options={{ presentation: 'modal' }} />
     </Stack>
   );
 }

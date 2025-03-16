@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 
-export default function Tracker() {
+export default function TrackerLayout() {
   return (
     <Stack
       screenOptions={{
@@ -14,7 +14,7 @@ export default function Tracker() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="track/index" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
+      <Stack.Screen name="monitor/index" options={{ headerShown: false, animation: 'slide_from_bottom' }} />
     </Stack>
   );
 }

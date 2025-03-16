@@ -1,6 +1,6 @@
 import { AuthApi, LoginRequestBody } from './AuthApi';
 import { useAuthStore } from '@/store';
-import { RegisterForm } from '@/forms';
+import { RegistrationForm } from '@/forms';
 
 export const AuthHelper = {
   login: async (data: LoginRequestBody): Promise<boolean> => {
@@ -18,7 +18,7 @@ export const AuthHelper = {
       return false;
     }
   },
-  register: async (data: RegisterForm): Promise<string | undefined> => {
+  register: async (data: RegistrationForm): Promise<string | undefined> => {
     try {
       const { age, experienceYears, ...rest } = data;
 

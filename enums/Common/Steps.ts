@@ -1,4 +1,4 @@
-export enum RegisterStep {
+export enum RegistrationStep {
   CreateAccount = 'Create Account',
   VerifyEmail = 'Verify Email',
 }

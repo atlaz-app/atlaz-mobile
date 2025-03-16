@@ -1,59 +1,10 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, Button } from 'react-native';
+import { Text, SafeAreaView } from 'react-native';
 
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-
-export default function StatsTab() {
-  const [facing, setFacing] = React.useState<CameraType>('back');
-  const [permission, requestPermission] = useCameraPermissions();
-  const cameraRef = React.useRef<CameraView>(null);
-  const [imageUri, setImageUri] = React.useState<string>();
-
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
-
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View>
-        <Text>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
-  }
-
-  const toggleCameraFacing = () => {
-    setFacing((current) => (current === 'back' ? 'front' : 'back'));
-  };
-
-  const takePicture = async () => {
-    const picture = await cameraRef.current?.takePictureAsync();
-    setImageUri(picture?.uri);
-    console.log('ds', picture);
-  };
-
+export default function Stats() {
   return (
-    <View className="h-full">
-      {imageUri ? (
-        <TouchableOpacity onPress={() => setImageUri('')} className="h-full">
-          <Image source={{ uri: imageUri }} className="w-full h-full" />
-        </TouchableOpacity>
-      ) : (
-        <CameraView facing={facing} className="h-full" ref={cameraRef}>
-          <View className="h-full flex justify-end">
-            <View className="flex flex-row justify-center gap-12 mb-8">
-              <TouchableOpacity onPress={toggleCameraFacing} className="flex items-center justify-center">
-                <Text>FLIP</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={takePicture}>
-                <View className="w-12 h-12 bg-red-500 rounded-full"></View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </CameraView>
-      )}
-    </View>
+    <SafeAreaView className="bg-black w-full h-full flex items-center justify-center">
+      <Text className="text-white">Coming soon</Text>
+    </SafeAreaView>
   );
 }
