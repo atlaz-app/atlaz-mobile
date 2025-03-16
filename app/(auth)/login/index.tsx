@@ -10,6 +10,7 @@ import { FormError } from '@/components/Indicators';
 import { FormPasswordInput, FormTextInput } from '@/components/Inputs';
 import { LoginForm, loginSchema } from '@/forms';
 import { AuthHelper } from '@/infrastructure/services/Auth';
+import { ScreenPath } from '@/enums/Paths';
 
 export default function Login() {
   const [isLoading, setLoading] = React.useState(false);
@@ -40,7 +41,7 @@ export default function Login() {
     }
 
     setLoading(false);
-    router.navigate('/(dashboard)/tracker');
+    router.navigate(ScreenPath.Auth);
   });
 
   return (

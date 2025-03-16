@@ -14,7 +14,7 @@ import { CreatePresetTabParamList } from '@/types';
 import { PresetParam } from '@/enums/Common';
 import { usePresetStore, useTrackerStore } from '@/store';
 import { UserApi } from '@/infrastructure/services/User';
-import { BackendPaths } from '@/enums/Paths';
+import { BackendPaths, ScreenPath } from '@/enums/Paths';
 
 const Tab = createMaterialTopTabNavigator<CreatePresetTabParamList>();
 
@@ -61,7 +61,7 @@ export default function TrackerNewPresetLayout() {
 
             setConfig(newPreset);
 
-            router.navigate('/(dashboard)/tracker/monitor');
+            router.navigate(ScreenPath.DashboardTrackerMonitor);
           },
         };
       default:

@@ -12,8 +12,8 @@ export default function SetupCreatePresetSave() {
         <Text className="text-white mt-24 text-lg font-semibold pl-4">Name your preset</Text>
         <TextInput
           className="w-full rounded-xl p-4 placeholder:text-white/50 text-white placeholder:text-sm h-[50] bg-gray-800"
-          cursorColor={'white'}
-          selectionColor={'white'}
+          cursorColor="white"
+          selectionColor="white"
           onChangeText={(text) => setName(text)}
           placeholder="Name your preset"
         />

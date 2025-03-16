@@ -7,6 +7,7 @@ import { FormError } from '@/components/Indicators';
 import { FormTextInput } from '@/components/Inputs';
 import { RegistrationStep } from '@/enums/Common';
 import { AuthHelper } from '@/infrastructure/services/Auth';
+import { ScreenPath } from '@/enums/Paths';
 
 type RegistrationStepProps = {
   email: string;
@@ -35,7 +36,7 @@ export const VerifyEmail = ({ email }: RegistrationStepProps) => {
     }
 
     setLoading(false);
-    router.replace('/(dashboard)/tracker');
+    router.replace(ScreenPath.DashboardTracker);
   });
 
   return (

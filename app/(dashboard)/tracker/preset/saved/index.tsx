@@ -7,7 +7,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import useSWR from 'swr';
 import clsx from 'clsx';
 import { useTrackerStore } from '@/store/trackerStore';
-import { BackendPaths } from '@/enums/Paths';
+import { BackendPaths, ScreenPath } from '@/enums/Paths';
 import { UserApi } from '@/infrastructure/services/User';
 import { Preset } from '@/types';
 
@@ -22,7 +22,7 @@ export default function Saved() {
 
   const pickPreset = async (preset: Preset) => {
     setConfig(preset);
-    router.navigate('/(dashboard)/tracker/monitor');
+    router.navigate(ScreenPath.DashboardTrackerMonitor);
   };
 
   const deletePreset = async (presetId: number) => {
@@ -69,7 +69,7 @@ export default function Saved() {
         showsVerticalScrollIndicator={false}
       />
       <Pressable
-        onPress={() => router.push('/(dashboard)/tracker/setup/create-preset')}
+        onPress={() => router.push(ScreenPath.DashboardTrackerPresetNew)}
         className="bg-white p-4 rounded-full absolute bottom-8 right-8 w-[60px] h-[60px] flex items-center justify-center">
         <Ionicons size={32} color="black" name="add" />
       </Pressable>

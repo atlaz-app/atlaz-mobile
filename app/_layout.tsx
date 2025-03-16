@@ -2,12 +2,13 @@ import { router, Stack } from 'expo-router';
 import '../global.css';
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { ScreenPath } from '@/enums/Paths';
 
 export default function RootLayout() {
   const { authenticated } = useAuthStore();
 
   React.useEffect(() => {
-    router.push(authenticated ? '/(dashboard)/explorer' : '/(auth)/login');
+    router.push(authenticated ? ScreenPath.DashboardExplorer : ScreenPath.AuthLogin);
   }, [authenticated]);
 
   return authenticated ? (

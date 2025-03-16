@@ -3,12 +3,13 @@ import React from 'react';
 
 import { TabBarIcon } from '@/components/Expo/navigation/TabBarIcon';
 import { useAuthStore } from '@/store/authStore';
+import { ScreenPath } from '@/enums/Paths';
 
 export default function DashboardLayout() {
   const { authenticated } = useAuthStore();
 
   if (!authenticated) {
-    return <Redirect href="/(auth)/login" />;
+    return <Redirect href={ScreenPath.AuthLogin} />;
   }
 
   return (

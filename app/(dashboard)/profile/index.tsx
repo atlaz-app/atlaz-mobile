@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 import { CallibriSensor } from 'react-native-neurosdk2';
 import useSWR from 'swr';
 import { ConnectedSensorIcon, DisconnectedSensorIcon } from '@/components/Icons';
-import { BackendPaths } from '@/enums/Paths';
+import { BackendPaths, ScreenPath } from '@/enums/Paths';
 import { scanner } from '@/infrastructure/clients';
 import { UserApi } from '@/infrastructure/services/User';
 import { SensorList, useAuthStore, useGlobalStore } from '@/store';
@@ -86,7 +86,7 @@ export default function Profile() {
     setAccessToken('');
     setRefreshToken('');
 
-    router.replace('/(auth)/login');
+    router.replace(ScreenPath.AuthLogin);
   };
 
   const sensorListArray = Object.entries(sensorList || {}).map(([address, sensorData]) => ({

@@ -5,6 +5,7 @@ import { Button, ScrollView, Text } from 'react-native';
 
 import { CreateAccount, VerifyEmail } from './_components';
 import { RegistrationStep } from '@/enums/Common';
+import { ScreenPath } from '@/enums/Paths';
 
 export default function Registration() {
   const [email, setEmail] = React.useState<string>();
@@ -24,7 +25,7 @@ export default function Registration() {
       )}
       <Button
         onPress={async () => {
-          router.navigate('/(auth)/login');
+          router.navigate(ScreenPath.AuthLogin);
         }}
         title="Sign In"
         color="white"
