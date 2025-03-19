@@ -10,6 +10,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import clsx from 'clsx';
 import { useGlobalStore } from '@/store';
 import { useTrackerStore } from '@/store/trackerStore';
+import { ScreenPath } from '@/enums/Paths';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -171,7 +172,7 @@ export const BlindTracker = () => {
             'flex flex-row justify-between items-center mb-12  px-8 py-2 w-full rounded-full',
             isTracking && 'invisible pointer-events-none',
           )}>
-          <Pressable onPress={() => router.navigate('/(dashboard)/tracker/setup')}>
+          <Pressable onPress={() => router.navigate(ScreenPath.DashboardTrackerPresetSaved)}>
             <View className="flex flex-row gap-4 items-center">
               <Ionicons size={24} color="white" name="settings-outline" />
               <Text className="text-white text-2xl font-semibold">{config?.name || 'Workout'}</Text>

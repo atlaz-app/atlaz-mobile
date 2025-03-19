@@ -2,6 +2,12 @@ import { Stack } from 'expo-router';
 import React from 'react';
 
 export default function TrackerLayout() {
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     // Replace with the initial route (e.g., index)
+  //     router.replace('/(dashboard)/tracker');
+  //   }, [router]),
+  // );
   return (
     <Stack
       screenOptions={{
@@ -9,7 +15,7 @@ export default function TrackerLayout() {
         headerShown: false,
       }}>
       <Stack.Screen
-        name="setup"
+        name="preset"
         options={{
           headerShown: false,
         }}

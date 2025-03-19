@@ -1,21 +1,21 @@
-export enum TrackerMode {
-  Blind = 'Blind',
-  Visual = 'Visual',
-}
-
 export enum TrackerMuscle {
   Biceps = 'Biceps',
   Triceps = 'Triceps',
   Deltoid = 'Deltoid',
 }
-export enum TrackerOptimization {
-  Strength = 'Strength',
+
+export enum TrackerMode {
   Hypertrophy = 'Hypertrophy',
-  Freestyle = 'Freestyle',
+  Strength = 'Strength',
+}
+
+export enum TrackerVisual {
+  On = 'On',
+  Off = 'Off',
 }
 
 export enum PresetParam {
   Muscle = 'Muscle',
   Mode = 'Mode',
-  Optimization = 'Optimization',
+  Visual = 'Visual',
 }

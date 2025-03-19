@@ -8,13 +8,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { mutate } from 'swr';
 import SetupCreatePresetMuscle from './muscle';
 import SetupCreatePresetMode from './mode';
-import SetupCreatePresetOptimization from './optimization';
 import SetupCreatePresetSave from './save';
+import SetupCreatePresetVisual from './visual';
 import { CreatePresetTabParamList } from '@/types';
 import { PresetParam } from '@/enums/Common';
 import { usePresetStore, useTrackerStore } from '@/store';
-import { UserApi } from '@/infrastructure/services/User';
 import { BackendPaths, ScreenPath } from '@/enums/Paths';
+import { PresetApi } from '@/infrastructure/services/Preset';
 
 const Tab = createMaterialTopTabNavigator<CreatePresetTabParamList>();
 
@@ -41,11 +41,11 @@ export default function TrackerNewPresetLayout() {
       case PresetParam.Mode:
         return {
           text: 'Confirm Mode',
-          onPress: () => navigation.navigate(PresetParam.Optimization),
+          onPress: () => navigation.navigate(PresetParam.Visual),
         };
-      case PresetParam.Optimization:
+      case PresetParam.Visual:
         return {
-          text: 'Confirm Optimization',
+          text: 'Confirm Visual',
           onPress: () => navigation.navigate('Save'),
         };
       case 'Save':
@@ -55,8 +55,8 @@ export default function TrackerNewPresetLayout() {
             const newPreset = getPreset();
 
             if (newPreset && newPreset.name) {
-              const response = await UserApi.presets.createPreset(newPreset);
-              mutate(BackendPaths.UserPresets, response.data);
+              const response = await PresetApi.createPreset(newPreset);
+              mutate(BackendPaths.Presets, response.data);
             }
 
             setConfig(newPreset);
@@ -86,7 +86,7 @@ export default function TrackerNewPresetLayout() {
         initialLayout={{ width: Dimensions.get('window').width }}>
         <Tab.Screen name="Muscle" component={SetupCreatePresetMuscle} />
         <Tab.Screen name="Mode" component={SetupCreatePresetMode} />
-        <Tab.Screen name="Optimization" component={SetupCreatePresetOptimization} />
+        <Tab.Screen name="Visual" component={SetupCreatePresetVisual} />
         <Tab.Screen name="Save" component={SetupCreatePresetSave} />
       </Tab.Navigator>
       <View className="absolute bottom-8 w-full flex items-center px-4" style={{ marginBottom: insets.bottom }}>

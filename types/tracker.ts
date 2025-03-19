@@ -1,9 +1,9 @@
-import { TrackerMode, TrackerMuscle, TrackerOptimization } from '@/enums/Common';
+import { TrackerMode, TrackerMuscle, TrackerVisual } from '@/enums/Common';
 
 export type CreatePresetTabParamList = {
   Muscle: undefined;
   Mode: undefined;
-  Optimization: undefined;
+  Visual: undefined;
   Save: undefined;
 };
 
@@ -11,6 +11,6 @@ export type Preset = {
   id?: number;
   muscle: TrackerMuscle;
   mode: TrackerMode;
-  optimization: TrackerOptimization;
+  visual: TrackerVisual;
   name?: string;
 };

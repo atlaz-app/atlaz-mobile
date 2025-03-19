@@ -1,6 +1,6 @@
 import { BackendPaths } from '@/enums/Paths';
 import { backendClient } from '@/infrastructure/clients';
-import { Preset, UserInfo } from '@/types';
+import { UserInfo } from '@/types';
 
 export type RegisterRequestBody = {
   username: string;
@@ -11,12 +11,5 @@ export type RegisterRequestBody = {
 };
 
 export const UserApi = {
-  session: {
-    getUserInfo: async () => backendClient.get<UserInfo>(BackendPaths.UserInfo),
-  },
-  presets: {
-    createPreset: async (preset: Preset) => backendClient.post<Preset[]>(BackendPaths.UserPresets, preset),
-    getPresetList: async () => backendClient.get<Preset[]>(BackendPaths.UserPresets),
-    deletePreset: async (presetId: number) => backendClient.delete<Preset[]>(BackendPaths.UserPresetById(presetId)),
-  },
+  getUserInfo: async () => backendClient.get<UserInfo>(BackendPaths.UserInfo),
 };

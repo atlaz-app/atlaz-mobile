@@ -3,11 +3,10 @@ import React from 'react';
 import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 
 import clsx from 'clsx';
-import { router } from 'expo-router';
 import { CallibriSensor } from 'react-native-neurosdk2';
 import useSWR from 'swr';
 import { ConnectedSensorIcon, DisconnectedSensorIcon } from '@/components/Icons';
-import { BackendPaths, ScreenPath } from '@/enums/Paths';
+import { BackendPaths } from '@/enums/Paths';
 import { scanner } from '@/infrastructure/clients';
 import { UserApi } from '@/infrastructure/services/User';
 import { SensorList, useAuthStore, useGlobalStore } from '@/store';
@@ -18,9 +17,9 @@ export default function Profile() {
 
   const { activeSensor, sensorList, setActiveSensor, setSensorList } = useGlobalStore();
 
-  const [isConnecting, setIsConnecting] = React.useState(false);
+  console.log(activeSensor);
 
-  console.log('test', sensorList?.[activeSensor!]?.sensor?.getState());
+  const [isConnecting, setIsConnecting] = React.useState(false);
 
   const { data: userInfo } = useSWR(BackendPaths.UserInfo, async () => {
     const response = await UserApi.session.getUserInfo();
@@ -85,16 +84,16 @@ export default function Profile() {
     setAuthenticated(false);
     setAccessToken('');
     setRefreshToken('');
-
-    router.replace(ScreenPath.AuthLogin);
   };
 
-  const sensorListArray = Object.entries(sensorList || {}).map(([address, sensorData]) => ({
-    address,
-    ...sensorData,
-  }));
-
-  const lastSensorAddress = sensorListArray?.[sensorListArray?.length - 1]?.address;
+  const sensorListArray = React.useMemo(
+    () =>
+      Object.entries(sensorList || {}).map(([address, sensorData]) => ({
+        address,
+        ...sensorData,
+      })),
+    [sensorList],
+  );
 
   return (
     <SafeAreaView className="w-full h-full bg-black">
@@ -120,7 +119,7 @@ export default function Profile() {
                 <View
                   className={clsx(
                     'px-3 py-10 shadow-sm border-b-[0.5px] border-solid border-gray-500 flex flex-row gap-8 w-full h-[152px]',
-                    sensorData.address === lastSensorAddress && '!border-black',
+                    sensorData.address === sensorListArray?.[sensorListArray?.length - 1]?.address && '!border-black',
                   )}>
                   <View className="pt-6">
                     {sensorData.connected ? <ConnectedSensorIcon /> : <DisconnectedSensorIcon />}

@@ -3,74 +3,81 @@ import React from 'react';
 import Svg, { Circle } from 'react-native-svg';
 import { Pressable, Text, View } from 'react-native';
 import { SensorCommand, SensorFilter } from 'react-native-neurosdk2';
+import { router, useFocusEffect } from 'expo-router';
 import { useTrackerStore } from '@/store/trackerStore';
 import { useGlobalStore } from '@/store';
+import { calcAvg } from '@/utils';
 
 export const Calibrator = () => {
   const { sessionBase, setSessionBase } = useTrackerStore();
   const { activeSensor, sensorList } = useGlobalStore();
-
-  const sensor = sensorList?.[activeSensor!].sensor;
+  const [isConnected, setIsConnected] = React.useState(true);
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<number[]>([]);
   const [envelope, setEnvelope] = React.useState<number[]>([]);
   const [isTracking, setTracking] = React.useState(false);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      return () => {
+        setIsConnected(true);
+      };
+    }, [router]),
+  );
+
   const MAX_DATA_POINTS = 100;
   const CIRCLE_RADIUS = 45;
   const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
-  const calAvg = (arr: number[]) => {
-    let sum = 0;
-    for (let i = 0; i < arr.length; i++) {
-      sum += arr[i];
-    }
-    return sum / arr.length;
-  };
-
   const calibrateSensor = async () => {
-    if (isTracking) return;
-    envelopeRef.current = [];
-    setEnvelope([]);
-    sampleCountRef.current = 0;
+    if (sensorList?.[activeSensor!].connected) {
+      const sensor = sensorList?.[activeSensor!].sensor;
 
-    sensor?.AddEnvelopeDataChanged((data) => {
-      if (data !== null && sampleCountRef.current > 5) {
-        console.log(envelopeRef.current, envelope, sampleCountRef.current);
+      if (isTracking) return;
+      envelopeRef.current = [];
+      setEnvelope([]);
+      sampleCountRef.current = 0;
 
-        const newEntry = data[0].Sample;
+      sensor?.AddEnvelopeDataChanged((data) => {
+        if (data !== null && sampleCountRef.current > 5) {
+          console.log(envelopeRef.current, envelope, sampleCountRef.current);
 
-        envelopeRef.current = [...envelopeRef.current, newEntry];
+          const newEntry = data[0].Sample;
 
-        if (envelopeRef.current.length > MAX_DATA_POINTS) {
-          sensor?.RemoveEnvelopeDataChanged();
-          sensor?.execute(SensorCommand.StopEnvelope);
+          envelopeRef.current = [...envelopeRef.current, newEntry];
 
-          const base = calAvg(envelopeRef.current);
-          setSessionBase(base);
-          setTracking(false);
+          if (envelopeRef.current.length > MAX_DATA_POINTS) {
+            sensor?.RemoveEnvelopeDataChanged();
+            sensor?.execute(SensorCommand.StopEnvelope);
+
+            const base = calcAvg(envelopeRef.current);
+            setSessionBase(base);
+            setTracking(false);
+          }
+
+          setEnvelope([...envelopeRef.current]);
         }
 
-        setEnvelope([...envelopeRef.current]);
+        sampleCountRef.current = sampleCountRef.current + 1;
+      });
+
+      const filters = [
+        SensorFilter.FilterBSFBwhLvl2CutoffFreq45_55Hz,
+        SensorFilter.FilterBSFBwhLvl2CutoffFreq55_65Hz,
+        SensorFilter.FilterHPFBwhLvl2CutoffFreq10Hz,
+        SensorFilter.FilterLPFBwhLvl2CutoffFreq400Hz,
+      ];
+      sensor?.setHardwareFilters(filters);
+
+      try {
+        await sensor?.execute(SensorCommand.StartEnvelope);
+        setTracking(true);
+      } catch (e) {
+        console.log('Failed start envelope:', e);
       }
-
-      sampleCountRef.current = sampleCountRef.current + 1;
-    });
-
-    const filters = [
-      SensorFilter.FilterBSFBwhLvl2CutoffFreq45_55Hz,
-      SensorFilter.FilterBSFBwhLvl2CutoffFreq55_65Hz,
-      SensorFilter.FilterHPFBwhLvl2CutoffFreq10Hz,
-      SensorFilter.FilterLPFBwhLvl2CutoffFreq400Hz,
-    ];
-    sensor?.setHardwareFilters(filters);
-
-    try {
-      await sensor?.execute(SensorCommand.StartEnvelope);
-      setTracking(true);
-    } catch (e) {
-      console.log('Failed start envelope:', e);
+    } else {
+      setIsConnected(false);
     }
   };
 
@@ -101,11 +108,20 @@ export const Calibrator = () => {
             origin="50, 50" // Rotate around the center
           />
         </Svg>
-        <Text className="text-white text-center text-4xl font-bold w-3/4">
-          {isTracking ? 'Calibrating...' : 'Calibrate device before starting'}
-        </Text>
-        <Text className="text-white/50 text-base mt-3">Keep muscle still & relaxed</Text>
-        {!isTracking && <Text className="text-white text-lg mt-20">Tap anywhere to start</Text>}
+        {isConnected ? (
+          <>
+            <Text className="text-white text-center text-4xl font-bold w-3/4">
+              {isTracking ? 'Calibrating...' : 'Calibrate device before starting'}
+            </Text>
+            <Text className="text-white/50 text-base mt-3">Keep muscle still & relaxed</Text>
+            {!isTracking && <Text className="text-white text-lg mt-20">Tap anywhere to start</Text>}
+          </>
+        ) : (
+          <>
+            <Text className="text-white text-center text-4xl font-bold w-full">No sensors connected</Text>
+            <Text className="text-white/50 text-base mt-3">Go to Profile and connect sensors</Text>
+          </>
+        )}
       </View>
     </Pressable>
   );

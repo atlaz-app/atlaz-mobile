@@ -5,9 +5,11 @@ export enum BackendPaths {
   AuthRefresh = '/auth/refresh',
 
   UserInfo = '/user/info',
-  UserPresets = '/user/presets',
+
+  Presets = '/presets',
+  PresetsCreate = '/presets/create',
 }
 
 export namespace BackendPaths {
-  export const UserPresetById = (id: number) => BackendPaths.UserPresets + '/' + id;
+  export const PresetById = (id: number) => BackendPaths.Presets + '/' + id;
 }

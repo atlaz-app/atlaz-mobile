@@ -8,15 +8,15 @@ import useSWR from 'swr';
 import clsx from 'clsx';
 import { useTrackerStore } from '@/store/trackerStore';
 import { BackendPaths, ScreenPath } from '@/enums/Paths';
-import { UserApi } from '@/infrastructure/services/User';
 import { Preset } from '@/types';
+import { PresetApi } from '@/infrastructure/services/Preset';
 
 export default function Saved() {
   const router = useRouter();
   const { setConfig } = useTrackerStore();
 
-  const { data, mutate } = useSWR(BackendPaths.UserPresets, async () => {
-    const response = await UserApi.presets.getPresetList();
+  const { data, mutate } = useSWR(BackendPaths.Presets, async () => {
+    const response = await PresetApi.getPresetList();
     return response.data;
   });
 
@@ -26,11 +26,9 @@ export default function Saved() {
   };
 
   const deletePreset = async (presetId: number) => {
-    const response = await UserApi.presets.deletePreset(presetId);
+    const response = await PresetApi.deletePreset(presetId);
     mutate(response.data);
   };
-
-  const lastPresetId = data?.[data?.length - 1].id;
 
   return (
     <SafeAreaView className="justify-center w-full h-full bg-black flex items-center gap-16">
@@ -41,7 +39,7 @@ export default function Saved() {
             <View
               className={clsx(
                 'px-3 py-10 shadow-sm border-b-[0.5px] border-solid border-gray-500 flex gap-6',
-                preset.id === lastPresetId && '!border-black',
+                preset.id === data?.[data?.length - 1].id && '!border-black',
               )}>
               <View className="w-full flex flex-row justify-between items-center">
                 <Text className="text-lg font-extrabold mb-1 text-white">{preset.name}</Text>
@@ -57,8 +55,8 @@ export default function Saved() {
                   <Text className="text-sm text-white font-semibold">{preset.mode}</Text>
                 </View>
                 <View className="flex gap-2">
-                  <Text className="text-xs text-gray-500 font-medium">Optimization</Text>
-                  <Text className="text-sm text-white font-semibold">{preset.optimization}</Text>
+                  <Text className="text-xs text-gray-500 font-medium">Visual</Text>
+                  <Text className="text-sm text-white font-semibold">{preset.visual}</Text>
                 </View>
               </View>
             </View>

@@ -41,7 +41,7 @@ export default function Login() {
     }
 
     setLoading(false);
-    router.navigate(ScreenPath.Auth);
+    router.navigate(ScreenPath.DashboardTrackerPreset);
   });
 
   return (
@@ -65,7 +65,7 @@ export default function Login() {
         <BaseButton isLoading={isLoading} onPress={login} content="Sign In" />
         <Button
           onPress={async () => {
-            router.navigate('/(auth)/registration');
+            router.navigate(ScreenPath.AuthRegistration);
           }}
           title="Sign Up"
           color="white"></Button>

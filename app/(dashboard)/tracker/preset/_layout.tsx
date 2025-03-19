@@ -15,7 +15,7 @@ export default function TrackerPresetLayout() {
         headerShadowVisible: false,
       }}>
       <Stack.Screen
-        name="saved"
+        name="saved/index"
         options={{
           headerShown: false,
         }}
