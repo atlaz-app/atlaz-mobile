@@ -8,6 +8,9 @@ export enum BackendPaths {
 
   Presets = '/presets',
   PresetsCreate = '/presets/create',
+
+  Traces = '/traces',
+  TracesCreate = '/traces/create',
 }
 
 export namespace BackendPaths {

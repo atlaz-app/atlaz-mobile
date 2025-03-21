@@ -1,10 +1,41 @@
+import clsx from 'clsx';
 import React from 'react';
-import { Text, SafeAreaView } from 'react-native';
+import { Text, SafeAreaView, Pressable, View, FlatList } from 'react-native';
+import useSWR from 'swr';
+import { TraceApi } from '@/infrastructure/services/Trace';
+import { BackendPaths } from '@/enums/Paths';
 
 export default function Stats() {
+  const { data } = useSWR(BackendPaths.Traces, async () => {
+    const response = await TraceApi.getTraceList();
+    return response.data;
+  });
+
   return (
-    <SafeAreaView className="bg-black w-full h-full flex items-center justify-center">
-      <Text className="text-white">Coming soon</Text>
+    <SafeAreaView className="justify-center w-full h-full bg-black flex items-center gap-16">
+      <FlatList
+        data={data}
+        renderItem={({ item: trace }) => (
+          <Pressable onPress={() => {}}>
+            <View
+              className={clsx(
+                'px-3 py-7 border-b-[0.5px] border-solid border-white/50 flex gap-6 flex-row justify-between',
+                trace.id === data?.[data?.length - 1].id && '!border-black',
+              )}>
+              <View className="flex gap-4">
+                <Text className="text-base font-semibold text-white">{trace.preset.name}</Text>
+              </View>
+              <View className="flex gap-4 items-end">
+                <Text className="text-white/50 text-base font-normal">{trace.createdAt}</Text>
+                <Text className="text-white/50 text-base font-normal">{trace.duration} seconds</Text>
+              </View>
+            </View>
+          </Pressable>
+        )}
+        ListEmptyComponent={<Text className="text-center py-5 text-base text-gray-600">No presets available</Text>}
+        className="w-full px-3"
+        showsVerticalScrollIndicator={false}
+      />
     </SafeAreaView>
   );
 }

@@ -22,7 +22,7 @@ export default function Profile() {
   const [isConnecting, setIsConnecting] = React.useState(false);
 
   const { data: userInfo } = useSWR(BackendPaths.UserInfo, async () => {
-    const response = await UserApi.session.getUserInfo();
+    const response = await UserApi.getUserInfo();
     return response.data;
   });
 

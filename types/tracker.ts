@@ -14,3 +14,20 @@ export type Preset = {
   visual: TrackerVisual;
   name?: string;
 };
+
+export type Trace = {
+  id?: number;
+  presetId?: number;
+  muscle: TrackerMuscle;
+  mode: TrackerMode;
+  visual: TrackerVisual;
+  totalReps: number;
+  effectiveReps: number;
+  effectiveness: number;
+  envelopeBase: number;
+  envelopeData?: number[];
+  repPeaks?: number[];
+  duration?: number;
+  notes?: string;
+  createdAt?: string;
+};

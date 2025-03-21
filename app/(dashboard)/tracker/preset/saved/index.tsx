@@ -13,7 +13,7 @@ import { PresetApi } from '@/infrastructure/services/Preset';
 
 export default function Saved() {
   const router = useRouter();
-  const { setConfig } = useTrackerStore();
+  const { setConfig, setTracePreset } = useTrackerStore();
 
   const { data, mutate } = useSWR(BackendPaths.Presets, async () => {
     const response = await PresetApi.getPresetList();
@@ -22,6 +22,7 @@ export default function Saved() {
 
   const pickPreset = async (preset: Preset) => {
     setConfig(preset);
+    setTracePreset(preset.id);
     router.navigate(ScreenPath.DashboardTrackerMonitor);
   };
 
