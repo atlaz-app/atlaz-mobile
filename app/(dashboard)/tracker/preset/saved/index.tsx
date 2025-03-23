@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, FlatList, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
 
 import { useRouter } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -15,7 +15,7 @@ export default function Saved() {
   const router = useRouter();
   const { setConfig, setTracePreset } = useTrackerStore();
 
-  const { data, mutate } = useSWR(BackendPaths.Presets, async () => {
+  const { data, mutate, isLoading } = useSWR(BackendPaths.Presets, async () => {
     const response = await PresetApi.getPresetList();
     return response.data;
   });
@@ -30,6 +30,14 @@ export default function Saved() {
     const response = await PresetApi.deletePreset(presetId);
     mutate(response.data);
   };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="justify-center w-full h-full bg-black flex items-center gap-16">
+        <ActivityIndicator size="small" color="white" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="justify-center w-full h-full bg-black flex items-center gap-16">

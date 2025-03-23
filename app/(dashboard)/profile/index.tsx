@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
-import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 
 import clsx from 'clsx';
 import { CallibriSensor, SensorCommand, SensorState } from 'react-native-neurosdk2';
@@ -18,6 +18,7 @@ export default function Profile() {
   const { sensorList, setActiveSensor, setSensorList } = useGlobalStore();
 
   const [isConnecting, setIsConnecting] = React.useState(false);
+  const [isScanning, setIsScanning] = React.useState(false);
 
   const { data: userInfo } = useSWR(BackendPaths.UserInfo, async () => {
     const response = await UserApi.getUserInfo();
@@ -25,6 +26,7 @@ export default function Profile() {
   });
 
   const scan = async () => {
+    setIsScanning(true);
     await scanner.start();
     const sensors = await scanner.sensors();
 
@@ -42,6 +44,7 @@ export default function Profile() {
 
     setSensorList({ ...sensorList, ...sensorListingMapping });
     await scanner.stop();
+    setIsScanning(false);
   };
 
   const connect = async (sensorAddress: string) => {
@@ -213,7 +216,11 @@ export default function Profile() {
         <Pressable
           onPress={scan}
           className="bg-white p-4 rounded-full absolute bottom-8 right-8 w-[60px] h-[60px] flex items-center justify-center">
-          <Ionicons size={32} color="black" name="add" />
+          {isScanning ? (
+            <ActivityIndicator size="small" color="black" />
+          ) : (
+            <Ionicons size={32} color="black" name="add" />
+          )}
         </Pressable>
       </View>
     </SafeAreaView>

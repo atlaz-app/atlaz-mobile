@@ -15,4 +15,5 @@ export enum BackendPaths {
 
 export namespace BackendPaths {
   export const PresetById = (id: number) => BackendPaths.Presets + '/' + id;
+  export const TraceById = (id: number | string) => BackendPaths.Traces + '/' + id;
 }

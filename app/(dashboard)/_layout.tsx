@@ -2,6 +2,7 @@ import { Tabs, Redirect, router, usePathname } from 'expo-router';
 import React from 'react';
 
 import { CallibriSensor, SensorCommand, SensorState } from 'react-native-neurosdk2';
+import * as Haptics from 'expo-haptics';
 import { TabBarIcon } from '@/components/Expo/navigation/TabBarIcon';
 import { useAuthStore } from '@/store/authStore';
 import { ScreenPath } from '@/enums/Paths';
@@ -99,6 +100,7 @@ export default function DashboardLayout() {
         }}
         listeners={{
           tabPress: (e) => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             console.log(pathname, !pathname.includes('/tracker/monitor'));
             if (!pathname.includes('/tracker')) {
               e.preventDefault();
@@ -115,14 +117,24 @@ export default function DashboardLayout() {
             <TabBarIcon name={focused ? 'compass' : 'compass-outline'} color={color} />
           ),
         }}
+        listeners={{
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          },
+        }}
       />
       <Tabs.Screen
-        name="stats/index"
+        name="stats"
         options={{
           title: 'Stats',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'stats-chart' : 'stats-chart-outline'} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          },
         }}
       />
       <Tabs.Screen
@@ -132,6 +144,11 @@ export default function DashboardLayout() {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'person-circle' : 'person-circle-outline'} color={color} />
           ),
+        }}
+        listeners={{
+          tabPress: () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          },
         }}
       />
     </Tabs>

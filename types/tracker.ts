@@ -25,8 +25,8 @@ export type Trace = {
   effectiveReps: number;
   effectiveness: number;
   envelopeBase: number;
-  envelopeData?: number[];
-  repPeaks?: number[];
+  envelopeData?: string;
+  repPeaks?: string;
   duration?: number;
   notes?: string;
   createdAt?: string;
