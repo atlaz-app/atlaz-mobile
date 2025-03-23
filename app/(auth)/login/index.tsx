@@ -59,6 +59,7 @@ export default function Login() {
           placeholder="Enter email"
           textContentType="emailAddress"
           autoCorrect={true}
+          autoFocus={true}
         />
         <FormPasswordInput control={control} name="password" placeholder="Enter password" />
         <FormError message={submissionErrorMessage || Object.values(errors)?.[0]?.message} />

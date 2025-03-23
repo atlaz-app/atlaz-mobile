@@ -1,6 +1,6 @@
 import React from 'react';
 import { LineChart } from 'react-native-gifted-charts';
-import { Button, Dimensions, Pressable, Text, View } from 'react-native';
+import { Button, Dimensions, Keyboard, Pressable, Text, TextInput, View } from 'react-native';
 
 import { router, useFocusEffect } from 'expo-router';
 
@@ -10,29 +10,40 @@ import clsx from 'clsx';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { mutate } from 'swr';
+import { HttpStatusCode } from 'axios';
 import { useGlobalStore, useTrackerStore } from '@/store';
-import { ScreenPath } from '@/enums/Paths';
+import { BackendPaths, ScreenPath } from '@/enums/Paths';
+import { TraceApi } from '@/infrastructure/services/Trace';
 
 const screenWidth = Dimensions.get('window').width;
 
-const defaultEnvelope = Array.from({ length: 50 }, () => ({ value: 0.0009 }));
-
 export const VisualTracker = () => {
+  const defaultEnvelopeRef = Array.from({ length: 50 }, () => useTrackerStore.getState().sessionBase!);
+  const defaultEnvelope = Array.from({ length: 50 }, () => ({
+    value: useTrackerStore.getState().sessionBase!,
+  }));
   const { activeSensor, sensorList } = useGlobalStore();
 
   const sensor = sensorList?.[activeSensor!].sensor;
-
-  const { sessionBase, setSessionBase, config } = useTrackerStore();
+  const { sessionBase, setSessionBase, config, tracePreset } = useTrackerStore();
 
   const sampleCountRef = React.useRef(0);
-  const envelopeRef = React.useRef<{ value: number }[]>(defaultEnvelope);
-  const [envelope, setEnvelope] = React.useState<{ value: number }[]>(defaultEnvelope);
+  const envelopeRef = React.useRef<number[]>(defaultEnvelopeRef);
+  const fullEnvelopeRef = React.useRef<number[]>([]);
+  const repPeaksRef = React.useRef<number[]>([]);
+  const currentRepPeakRef = React.useRef<number | null>(null);
+  const muscleStateRef = React.useRef<'relaxed' | 'regular' | 'effective'>('relaxed');
+  const startTimeRef = React.useRef<number | null>(null);
 
+  const [duration, setDuration] = React.useState<number>(0);
+  const [envelope, setEnvelope] = React.useState<{ value: number }[]>(defaultEnvelope);
   const [totalReps, setTotalReps] = React.useState(0);
   const [effectiveReps, setEffectiveReps] = React.useState(0);
+  const [traceNotes, setTraceNotes] = React.useState<string>();
 
   const [isTracking, setTracking] = React.useState(false);
-  const [muscleState, setMuscleState] = React.useState('relaxed');
+  const [isRecorded, setRecorded] = React.useState(false);
 
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = React.useRef<CameraView>(null);
@@ -40,9 +51,7 @@ export const VisualTracker = () => {
   const startTracking = async () => {
     sensor?.AddEnvelopeDataChanged((data) => {
       if (data !== null && sampleCountRef.current > 5) {
-        const newEntry = {
-          value: data[0].Sample,
-        };
+        const newEntry = data[0].Sample;
 
         envelopeRef.current = [...envelopeRef.current, newEntry];
 
@@ -52,7 +61,21 @@ export const VisualTracker = () => {
           envelopeRef.current.shift();
         }
 
-        setEnvelope([...envelopeRef.current]);
+        const envelopeGraphMapping = envelopeRef.current.map((value) => ({
+          value,
+        }));
+
+        setEnvelope([...envelopeGraphMapping]);
+
+        if (sampleCountRef.current % 10 === 0) {
+          fullEnvelopeRef.current = [...fullEnvelopeRef.current, newEntry];
+        }
+
+        if (muscleStateRef.current !== 'relaxed') {
+          console.log('here');
+          currentRepPeakRef.current =
+            currentRepPeakRef.current === null ? newEntry : Math.max(currentRepPeakRef.current, newEntry);
+        }
       }
 
       sampleCountRef.current = sampleCountRef.current + 1;
@@ -60,7 +83,6 @@ export const VisualTracker = () => {
 
     const filters = [
       SensorFilter.FilterBSFBwhLvl2CutoffFreq45_55Hz,
-      SensorFilter.FilterBSFBwhLvl2CutoffFreq55_65Hz,
       SensorFilter.FilterHPFBwhLvl2CutoffFreq10Hz,
       SensorFilter.FilterLPFBwhLvl2CutoffFreq400Hz,
     ];
@@ -68,6 +90,7 @@ export const VisualTracker = () => {
 
     try {
       await sensor?.execute(SensorCommand.StartEnvelope);
+      startTimeRef.current = Date.now();
       setTracking(true);
     } catch (e) {
       console.log('Failed start envelope:', e);
@@ -75,41 +98,90 @@ export const VisualTracker = () => {
   };
 
   const stopTracking = async () => {
+    if (!isTracking) return;
+
     sensor?.RemoveEnvelopeDataChanged();
     try {
       await sensor?.execute(SensorCommand.StopEnvelope);
+      const endTime = Date.now();
+      if (startTimeRef.current !== null) {
+        const durationMs = endTime - startTimeRef.current;
+        const durationSeconds = Math.round(durationMs / 1000);
+        setDuration(durationSeconds);
+      }
       setTracking(false);
-      setTotalReps(0);
-      setEffectiveReps(0);
-      setMuscleState('relaxed');
-      sampleCountRef.current = 0;
+      setRecorded(true);
     } catch (e) {
       console.log('Failed start envelope:', e);
     }
   };
 
+  const saveTrace = async ({ retry }: { retry: boolean }) => {
+    const saveTraceResponse = await TraceApi.createTrace({
+      mode: config!.mode,
+      muscle: config!.muscle,
+      visual: config!.visual,
+      duration,
+      totalReps,
+      effectiveReps,
+      envelopeBase: sessionBase!,
+      effectiveness: Number(((effectiveReps / totalReps) * 100 || 0).toFixed(0)),
+      envelopeData: fullEnvelopeRef.current,
+      repPeaks: repPeaksRef.current,
+      presetId: tracePreset,
+      notes: traceNotes,
+    });
+
+    if (saveTraceResponse.status !== HttpStatusCode.Created) return;
+
+    setRecorded(false);
+    setTotalReps(0);
+    setEffectiveReps(0);
+    setDuration(0);
+    setTraceNotes(undefined);
+    muscleStateRef.current = 'relaxed';
+    sampleCountRef.current = 0;
+    fullEnvelopeRef.current = [];
+    repPeaksRef.current = [];
+    currentRepPeakRef.current = null;
+
+    mutate(BackendPaths.Traces);
+
+    if (!retry) {
+      router.navigate(ScreenPath.DashboardTrackerPresetSaved);
+    }
+  };
+
   React.useEffect(() => {
-    if (sessionBase && envelope?.[envelope.length - 1]?.value > sessionBase * 10 && muscleState === 'relaxed') {
-      setMuscleState('regular');
+    if (
+      sessionBase &&
+      envelope?.[envelope.length - 1]?.value > sessionBase * 10 &&
+      muscleStateRef.current === 'relaxed'
+    ) {
+      muscleStateRef.current = 'regular';
     }
 
     if (sessionBase && envelope?.[envelope.length - 1]?.value > sessionBase * 35) {
-      setMuscleState('effective');
+      muscleStateRef.current = 'effective';
     }
 
     if (
       sessionBase &&
       envelope?.[envelope.length - 1]?.value < sessionBase * 4 &&
-      (muscleState === 'regular' || muscleState === 'effective')
+      (muscleStateRef.current === 'regular' || muscleStateRef.current === 'effective')
     ) {
-      setMuscleState('relaxed');
-      setTotalReps(totalReps + 1);
-
-      if (muscleState === 'effective') {
+      if (muscleStateRef.current === 'effective') {
         setEffectiveReps(effectiveReps + 1);
       }
+      muscleStateRef.current = 'relaxed';
+      setTotalReps(totalReps + 1);
+
+      if (currentRepPeakRef.current !== null) {
+        repPeaksRef.current = [...repPeaksRef.current, currentRepPeakRef.current];
+        currentRepPeakRef.current = null;
+      }
     }
-  }, [envelope, effectiveReps, muscleState, sessionBase, totalReps]);
+  }, [envelope, effectiveReps, sessionBase, totalReps]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -118,6 +190,11 @@ export const VisualTracker = () => {
       };
     }, [setSessionBase]),
   );
+
+  const handleOutsidePress = () => {
+    Keyboard.dismiss();
+    if (isTracking) stopTracking();
+  };
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -139,7 +216,7 @@ export const VisualTracker = () => {
   const graphMaxValue = sessionBase && sessionBase * 50;
 
   return (
-    <Pressable onPress={stopTracking}>
+    <Pressable onPress={handleOutsidePress}>
       <View className="w-full h-full bg-black">
         <View className="h-2/3 w-full top-0">
           <CameraView ref={cameraRef}>
@@ -148,6 +225,11 @@ export const VisualTracker = () => {
                 <View className="bg-red-500 w-4 h-4 rounded-full"></View>
                 <Text className="text-black font-semibold text-lg">Tap anywhere to stop</Text>
               </View>
+              {isRecorded && (
+                <Text className="absolute top-64 text-black text-4xl text-center font-bold ">
+                  Set ready to be saved!
+                </Text>
+              )}
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,1)']}
                 locations={[0, 0.8]}
@@ -174,44 +256,70 @@ export const VisualTracker = () => {
             </View>
           </CameraView>
         </View>
-        {isTracking ? (
-          <LineChart
-            data={envelope}
-            width={screenWidth - 20}
-            adjustToWidth
-            curved
-            thickness={3}
-            hideDataPoints
-            maxValue={graphMaxValue}
-            mostNegativeValue={0}
-            hideRules
-            yAxisOffset={graphOffset}
-            height={200}
-            showYAxisIndices={false}
-            showXAxisIndices={false}
-            showFractionalValues={false}
-            hideAxesAndRules
-            hideYAxisText
-            yAxisLabelWidth={0}
-            color={'white'}
-          />
+        {!isRecorded ? (
+          isTracking ? (
+            <LineChart
+              data={envelope}
+              width={screenWidth - 20}
+              adjustToWidth
+              curved
+              thickness={3}
+              hideDataPoints
+              maxValue={graphMaxValue}
+              mostNegativeValue={0}
+              hideRules
+              yAxisOffset={graphOffset}
+              height={200}
+              showYAxisIndices={false}
+              showXAxisIndices={false}
+              showFractionalValues={false}
+              hideAxesAndRules
+              hideYAxisText
+              yAxisLabelWidth={0}
+              color={'white'}
+            />
+          ) : (
+            <View
+              className={clsx(
+                'flex flex-row justify-between items-center mb-12  px-8 py-2 w-full h-1/3',
+                isTracking && 'invisible pointer-events-none',
+              )}>
+              <Pressable onPress={() => router.navigate(ScreenPath.DashboardTrackerPresetSaved)}>
+                <View className="flex flex-row gap-4 items-center">
+                  <Ionicons size={24} color="white" name="settings-outline" />
+                  <Text className="text-white text-2xl font-semibold">{config?.name || 'Workout'}</Text>
+                </View>
+              </Pressable>
+              <Pressable onPress={startTracking}>
+                <View className="bg-white p-4 rounded-full">
+                  <Ionicons size={24} color="black" name="play" />
+                </View>
+              </Pressable>
+            </View>
+          )
         ) : (
-          <View
-            className={clsx(
-              'flex flex-row justify-between items-center mb-12  px-8 py-2 w-full h-1/3',
-              isTracking && 'invisible pointer-events-none',
-            )}>
-            <Pressable onPress={() => router.navigate(ScreenPath.DashboardTrackerPresetSaved)}>
-              <View className="flex flex-row gap-4 items-center">
-                <Ionicons size={24} color="white" name="settings-outline" />
-                <Text className="text-white text-2xl font-semibold">{config?.name || 'Workout'}</Text>
-              </View>
-            </Pressable>
-            <Pressable onPress={startTracking}>
-              <View className="bg-white p-4 rounded-full">
-                <Ionicons size={24} color="black" name="play" />
-              </View>
-            </Pressable>
+          <View className="w-full px-5">
+            <TextInput
+              className="bg-white/10 w-full rounded-xl p-3 text-white text-wrap h-[128px] mt-8 mb-6"
+              multiline
+              cursorColor="white"
+              selectionColor="white"
+              placeholder="Add notes"
+              value={traceNotes}
+              onChangeText={(text) => setTraceNotes(text)}
+            />
+            <View className="flex flex-row gap-4">
+              <Pressable
+                onPress={() => saveTrace({ retry: true })}
+                className="basis-1/6 flex items-center justify-center rounded-xl h-14">
+                <Ionicons name="refresh-outline" size={24} color="white" />
+              </Pressable>
+              <Pressable
+                onPress={() => saveTrace({ retry: false })}
+                className="flex-1 bg-white flex items-center justify-center rounded-xl h-14">
+                <Ionicons name="checkmark" size={24} color="black" />
+              </Pressable>
+            </View>
           </View>
         )}
       </View>

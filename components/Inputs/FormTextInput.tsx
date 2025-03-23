@@ -13,6 +13,7 @@ type FormTextInputProps = {
   autoCorrect?: boolean;
   textContentType?: any;
   keyboardType?: any;
+  autoFocus?: boolean;
 };
 
 export const FormTextInput = ({
@@ -23,6 +24,7 @@ export const FormTextInput = ({
   autoCorrect,
   textContentType,
   keyboardType,
+  autoFocus,
 }: FormTextInputProps) => {
   return (
     <Controller
@@ -31,7 +33,7 @@ export const FormTextInput = ({
       render={({ field: { onChange, onBlur, value } }) => (
         <TextInput
           className={clsx(
-            'w-5/6 rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-[50]',
+            'w-5/6 rounded-xl p-4 placeholder:text-white/50 text-white placeholder:text-sm border-[1px] border-solid border-white h-[50]',
             className,
           )}
           placeholder={placeholder}
@@ -43,6 +45,7 @@ export const FormTextInput = ({
           keyboardType={keyboardType}
           cursorColor={'white'}
           selectionColor={'white'}
+          autoFocus={autoFocus}
         />
       )}
     />

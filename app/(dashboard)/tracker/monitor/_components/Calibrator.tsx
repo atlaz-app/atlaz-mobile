@@ -7,11 +7,12 @@ import { router, useFocusEffect } from 'expo-router';
 import { useTrackerStore } from '@/store/trackerStore';
 import { useGlobalStore } from '@/store';
 import { calcAvg } from '@/utils';
+import { ScreenPath } from '@/enums/Paths';
 
 export const Calibrator = () => {
   const { sessionBase, setSessionBase } = useTrackerStore();
   const { activeSensor, sensorList } = useGlobalStore();
-  const [isConnected, setIsConnected] = React.useState(true);
+  const [isConnected, setIsConnected] = React.useState(!!activeSensor);
 
   const sampleCountRef = React.useRef(0);
   const envelopeRef = React.useRef<number[]>([]);
@@ -23,7 +24,7 @@ export const Calibrator = () => {
       return () => {
         setIsConnected(true);
       };
-    }, [router]),
+    }, []),
   );
 
   const MAX_DATA_POINTS = 100;
@@ -31,7 +32,7 @@ export const Calibrator = () => {
   const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS;
 
   const calibrateSensor = async () => {
-    if (sensorList?.[activeSensor!].connected) {
+    if (sensorList?.[activeSensor!]?.connected) {
       const sensor = sensorList?.[activeSensor!].sensor;
 
       if (isTracking) return;
@@ -78,6 +79,7 @@ export const Calibrator = () => {
       }
     } else {
       setIsConnected(false);
+      router.push(ScreenPath.DashboardProfile);
     }
   };
 
@@ -86,7 +88,7 @@ export const Calibrator = () => {
   // Calculate the stroke offset to animate the fill
   const strokeDashoffset = CIRCLE_CIRCUMFERENCE * (1 - progress);
 
-  console.log(sessionBase);
+  console.log('base', sessionBase);
 
   return (
     <Pressable onPress={calibrateSensor}>

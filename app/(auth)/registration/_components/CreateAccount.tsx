@@ -47,7 +47,13 @@ export const CreateAccount = ({ setEmail, setRegistrationStep }: RegistrationSte
       onTouchStart={() => {
         clearErrors('password');
       }}>
-      <FormTextInput control={control} name="username" placeholder="Enter username" autoCorrect={false} />
+      <FormTextInput
+        control={control}
+        name="username"
+        placeholder="Enter username"
+        autoCorrect={false}
+        autoFocus={true}
+      />
       <FormTextInput control={control} name="email" placeholder="Enter email" textContentType="emailAddress" />
       <FormTextInput control={control} name="age" placeholder="Enter age" keyboardType="numeric" />
       <FormTextInput

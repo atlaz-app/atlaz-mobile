@@ -3,7 +3,7 @@ import React from 'react';
 import { FlatList, Pressable, SafeAreaView, Text, View } from 'react-native';
 
 import clsx from 'clsx';
-import { CallibriSensor } from 'react-native-neurosdk2';
+import { CallibriSensor, SensorCommand, SensorState } from 'react-native-neurosdk2';
 import useSWR from 'swr';
 import { ConnectedSensorIcon, DisconnectedSensorIcon } from '@/components/Icons';
 import { BackendPaths } from '@/enums/Paths';
@@ -15,9 +15,7 @@ import { getBatteryTimeRemaining } from '@/utils';
 export default function Profile() {
   const { setAuthenticated, setAccessToken, setRefreshToken } = useAuthStore();
 
-  const { activeSensor, sensorList, setActiveSensor, setSensorList } = useGlobalStore();
-
-  console.log(activeSensor);
+  const { sensorList, setActiveSensor, setSensorList } = useGlobalStore();
 
   const [isConnecting, setIsConnecting] = React.useState(false);
 
@@ -27,7 +25,6 @@ export default function Profile() {
   });
 
   const scan = async () => {
-    await scanner.stop();
     await scanner.start();
     const sensors = await scanner.sensors();
 
@@ -40,50 +37,91 @@ export default function Profile() {
       return acc;
     }, {} as SensorList);
 
-    setSensorList(sensorListingMapping);
-    console.log('sensorList', sensors);
+    console.log('oldList', sensorList);
+    console.log('newList', sensorListingMapping);
+
+    setSensorList({ ...sensorList, ...sensorListingMapping });
+    await scanner.stop();
   };
 
   const connect = async (sensorAddress: string) => {
     setIsConnecting(true);
-    console.log('connect');
-    const sensorToConnect = sensorList?.[sensorAddress];
 
-    if (sensorToConnect?.info) {
-      const newSensor = (await scanner.createSensor(sensorToConnect.info)) as CallibriSensor;
+    try {
+      const sensorInfo = sensorList[sensorAddress].info;
+
+      const sensorToConnect = (await scanner.createSensor(sensorInfo!)) as CallibriSensor;
+      console.log('connect', sensorToConnect);
+      const isSensorFound = await sensorToConnect.execute(SensorCommand.FindMe);
+
+      console.log('l', isSensorFound);
+
+      if (isSensorFound !== 'success') return setIsConnecting(false);
 
       setSensorList({
         ...sensorList,
         [sensorAddress]: {
           ...sensorList?.[sensorAddress],
-          sensor: newSensor,
+          sensor: sensorToConnect,
           connected: true,
         },
       });
       setActiveSensor(sensorAddress);
+
+      sensorToConnect.AddConnectionChanged((state) => {
+        if (state === SensorState.OutOfRange) {
+          setSensorList({
+            ...sensorList,
+            [sensorAddress]: {
+              ...sensorList?.[sensorAddress],
+              connected: false,
+            },
+          });
+          setActiveSensor(undefined);
+        }
+      });
+
+      setIsConnecting(false);
+    } catch (e) {
+      setSensorList({
+        ...sensorList,
+        [sensorAddress]: {
+          ...sensorList?.[sensorAddress],
+          connected: false,
+        },
+      });
+      setActiveSensor(undefined);
+      setIsConnecting(false);
+      console.log('Failed to connect', e);
     }
-    setIsConnecting(false);
   };
 
   const disconnect = async (sensorAddress: string) => {
     console.log('disconnect');
     const sensorToDisconnect = sensorList?.[sensorAddress].sensor;
-    await sensorToDisconnect?.disconnect();
-    await scanner.stop();
+    const isDisconnected = await sensorToDisconnect?.disconnect();
+    console.log('Is disconnected', isDisconnected, sensorAddress);
 
-    setSensorList({
-      ...sensorList,
-      [sensorAddress]: {
-        ...sensorList?.[sensorAddress],
-        connected: false,
-      },
-    });
+    if (isDisconnected === 'success') {
+      setSensorList({
+        ...sensorList,
+        [sensorAddress]: {
+          ...sensorList?.[sensorAddress],
+          connected: false,
+        },
+      });
+      setActiveSensor(undefined);
+    }
   };
 
   const logout = async () => {
     setAuthenticated(false);
     setAccessToken('');
     setRefreshToken('');
+
+    Object.values(sensorList).forEach(async (sensorData) => {
+      sensorData.sensor?.RemoveConnectionChanged();
+    });
   };
 
   const sensorListArray = React.useMemo(
@@ -141,7 +179,7 @@ export default function Profile() {
                             <View
                               className="h-full bg-white rounded-sm"
                               style={{
-                                width: `${sensorData.sensor?.getBattPower()}%`,
+                                width: `${sensorData?.sensor?.getBattPower()}%`,
                               }}
                             />
                           </View>

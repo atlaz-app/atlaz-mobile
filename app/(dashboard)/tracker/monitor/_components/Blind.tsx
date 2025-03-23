@@ -181,10 +181,6 @@ export const BlindTracker = () => {
     }
   }, [envelope, effectiveReps, sessionBase, totalReps]);
 
-  const graphOffset = sessionBase && sessionBase - sessionBase / 2;
-
-  const graphMaxValue = sessionBase && sessionBase * 50;
-
   useFocusEffect(
     React.useCallback(() => {
       return () => {
@@ -197,6 +193,10 @@ export const BlindTracker = () => {
     Keyboard.dismiss();
     if (isTracking) stopTracking();
   };
+
+  const graphOffset = sessionBase && sessionBase - sessionBase / 2;
+
+  const graphMaxValue = sessionBase && sessionBase * 50;
 
   return (
     <Pressable onPress={handleOutsidePress}>

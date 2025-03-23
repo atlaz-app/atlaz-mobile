@@ -13,7 +13,7 @@ export type SensorList = Record<
 >;
 
 interface GlobalState {
-  sensorList?: SensorList;
+  sensorList: SensorList;
   setSensorList: (sensorList: SensorList) => void;
   activeSensor?: string;
   setActiveSensor: (sensor?: string) => void;
@@ -22,6 +22,7 @@ interface GlobalState {
 export const useGlobalStore = create<GlobalState>()(
   persist(
     (set) => ({
+      sensorList: {},
       setActiveSensor: (activeSensor?: string) => set({ activeSensor }),
       setSensorList: (sensorList: SensorList) => set({ sensorList }),
     }),

@@ -37,7 +37,7 @@ export const FormPasswordInput = ({
             onChangeText={onChange}
             value={value}
             className={clsx(
-              'w-full rounded-xl p-4 placeholder:text-white/5 text-white placeholder:text-sm border-[1px] border-solid border-white h-full',
+              'w-full rounded-xl p-4 placeholder:text-white/50 text-white placeholder:text-sm border-[1px] border-solid border-white h-full',
 
               className,
             )}

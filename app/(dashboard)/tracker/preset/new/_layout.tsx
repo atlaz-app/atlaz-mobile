@@ -91,7 +91,7 @@ export default function TrackerNewPresetLayout() {
       </Tab.Navigator>
       <View className="absolute bottom-8 w-full flex items-center px-4" style={{ marginBottom: insets.bottom }}>
         <Pressable
-          className="flex flex-row justify-between items-center rounded-xl w-full px-4 border-solid border-[1px] border-gray-500 h-[50] bg-gray-800"
+          className="flex flex-row justify-between items-center rounded-xl w-full px-4 border-solid border-[1px] h-[54] bg-white/50"
           onPress={onPress}>
           <Text className="text-white font-semibold text-lg">{text}</Text>
           <Ionicons name="chevron-forward" size={24} color="white" />

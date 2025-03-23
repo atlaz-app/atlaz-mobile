@@ -1,7 +1,7 @@
 import { Tabs, Redirect, router, usePathname } from 'expo-router';
 import React from 'react';
 
-import { CallibriSensor } from 'react-native-neurosdk2';
+import { CallibriSensor, SensorCommand, SensorState } from 'react-native-neurosdk2';
 import { TabBarIcon } from '@/components/Expo/navigation/TabBarIcon';
 import { useAuthStore } from '@/store/authStore';
 import { ScreenPath } from '@/enums/Paths';
@@ -11,24 +11,66 @@ import { scanner } from '@/infrastructure/clients';
 export default function DashboardLayout() {
   const { sensorList, setActiveSensor, setSensorList } = useGlobalStore();
   const { authenticated } = useAuthStore();
+
   const pathname = usePathname();
 
   React.useEffect(() => {
-    Object.entries(sensorList || {}).forEach(async ([address, sensorData]) => {
-      if (sensorData?.info && sensorData.connected) {
-        const newSensor = (await scanner.createSensor(sensorData.info)) as CallibriSensor;
+    Object.entries(sensorList).forEach(async ([address, sensorData]) => {
+      if (sensorData?.sensor && sensorData.connected) {
+        try {
+          const sensorInfo = sensorList[address].info;
+          const sensorToConnect = (await scanner.createSensor(sensorInfo!)) as CallibriSensor;
+          console.log('connect', sensorToConnect);
+          const isSensorFound = await sensorToConnect.execute(SensorCommand.FindMe);
 
-        setSensorList({
-          ...sensorList,
-          [address]: {
-            ...sensorList?.[address],
-            sensor: newSensor,
-            connected: true,
-          },
-        });
-        setActiveSensor(address);
+          if (isSensorFound !== 'success') {
+            setSensorList({
+              ...sensorList,
+              [address]: {
+                ...sensorList?.[address],
+                connected: false,
+              },
+            });
+            setActiveSensor(undefined);
+            console.log('No sensor connected');
+          }
 
-        console.log('Sensor reconnected', address);
+          sensorToConnect.AddConnectionChanged((state) => {
+            if (state === SensorState.OutOfRange) {
+              setSensorList({
+                ...sensorList,
+                [address]: {
+                  ...sensorList?.[address],
+                  connected: false,
+                },
+              });
+              setActiveSensor(undefined);
+            }
+          });
+
+          setSensorList({
+            ...sensorList,
+            [address]: {
+              ...sensorList?.[address],
+              sensor: sensorToConnect,
+              connected: true,
+            },
+          });
+          setActiveSensor(address);
+
+          console.log('Sensor reconnected', address);
+        } catch {
+          setSensorList({
+            ...sensorList,
+            [address]: {
+              ...sensorList?.[address],
+              connected: false,
+            },
+          });
+          setActiveSensor(undefined);
+
+          console.log('No sensor connected');
+        }
       }
     });
   }, []);
