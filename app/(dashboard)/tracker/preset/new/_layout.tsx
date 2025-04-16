@@ -24,7 +24,7 @@ export default function TrackerNewPresetLayout() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<TabNavigationProp>();
   const { name, getPreset } = usePresetStore();
-  const { setConfig } = useTrackerStore();
+  const { setPreset } = useTrackerStore();
 
   const currentRoute = useNavigationState((state) => {
     const route = state.routes[state.index];
@@ -59,7 +59,7 @@ export default function TrackerNewPresetLayout() {
               mutate(BackendPaths.Presets, response.data);
             }
 
-            setConfig(newPreset);
+            setPreset(newPreset);
 
             router.navigate(ScreenPath.DashboardTrackerMonitor);
           },
@@ -70,7 +70,7 @@ export default function TrackerNewPresetLayout() {
           onPress: () => navigation.navigate(PresetParam.Muscle),
         };
     }
-  }, [currentRoute, name, setConfig, getPreset, navigation]);
+  }, [currentRoute, name, setPreset, getPreset, navigation]);
 
   return (
     <View className="flex-1 bg-black">

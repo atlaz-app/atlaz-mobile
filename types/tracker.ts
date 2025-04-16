@@ -26,8 +26,10 @@ export type Trace = {
   effectiveness: number;
   envelopeBase: number;
   envelopeData?: string;
+  repData: string;
   repPeaks?: string;
   duration?: number;
   notes?: string;
   createdAt?: string;
+  videoPath?: string;
 };

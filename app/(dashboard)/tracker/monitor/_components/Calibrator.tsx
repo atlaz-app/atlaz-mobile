@@ -11,7 +11,7 @@ import { ScreenPath } from '@/enums/Paths';
 
 export const Calibrator = () => {
   const { sessionBase, setSessionBase } = useTrackerStore();
-  const { activeSensor, sensorList } = useGlobalStore();
+  const { activeSensor, sensorList, setDashboardTabBar } = useGlobalStore();
   const [isConnected, setIsConnected] = React.useState(!!activeSensor);
 
   const sampleCountRef = React.useRef(0);
@@ -23,6 +23,7 @@ export const Calibrator = () => {
     React.useCallback(() => {
       return () => {
         setIsConnected(true);
+        setDashboardTabBar(true);
       };
     }, []),
   );
@@ -128,3 +129,5 @@ export const Calibrator = () => {
     </Pressable>
   );
 };
+
+export default Calibrator;

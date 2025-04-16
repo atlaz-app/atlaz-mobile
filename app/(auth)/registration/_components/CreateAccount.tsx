@@ -70,3 +70,5 @@ export const CreateAccount = ({ setEmail, setRegistrationStep }: RegistrationSte
     </View>
   );
 };
+
+export default CreateAccount;

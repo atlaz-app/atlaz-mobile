@@ -49,7 +49,7 @@ export default function Stats() {
             </View>
           </Pressable>
         )}
-        ListEmptyComponent={<Text className="text-center py-5 text-base text-gray-600">No presets available</Text>}
+        ListEmptyComponent={<Text className="text-center py-5 text-base text-gray-600 top-24">No traces recorded</Text>}
         className="w-full px-3"
         showsVerticalScrollIndicator={false}
       />

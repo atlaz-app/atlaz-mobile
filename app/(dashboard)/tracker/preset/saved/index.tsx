@@ -10,10 +10,12 @@ import { useTrackerStore } from '@/store/trackerStore';
 import { BackendPaths, ScreenPath } from '@/enums/Paths';
 import { Preset } from '@/types';
 import { PresetApi } from '@/infrastructure/services/Preset';
+import { useGlobalStore } from '@/store';
 
 export default function Saved() {
   const router = useRouter();
-  const { setConfig, setTracePreset } = useTrackerStore();
+  const { setPreset, setPresetId } = useTrackerStore();
+  const { setDashboardTabBar } = useGlobalStore();
 
   const { data, mutate, isLoading } = useSWR(BackendPaths.Presets, async () => {
     const response = await PresetApi.getPresetList();
@@ -21,8 +23,9 @@ export default function Saved() {
   });
 
   const pickPreset = async (preset: Preset) => {
-    setConfig(preset);
-    setTracePreset(preset.id);
+    setDashboardTabBar(false);
+    setPreset(preset);
+    setPresetId(preset.id);
     router.navigate(ScreenPath.DashboardTrackerMonitor);
   };
 

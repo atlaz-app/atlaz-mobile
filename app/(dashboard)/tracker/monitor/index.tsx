@@ -4,11 +4,11 @@ import { useTrackerStore } from '@/store/trackerStore';
 import { TrackerVisual } from '@/enums/Common';
 
 export default function TrackerMonitor() {
-  const { config, sessionBase } = useTrackerStore();
+  const { preset, sessionBase } = useTrackerStore();
 
   if (!sessionBase) {
     return <Calibrator />;
   }
 
-  return config?.visual === TrackerVisual.Off ? <BlindTracker /> : <VisualTracker />;
+  return preset?.visual === TrackerVisual.Off ? <BlindTracker /> : <VisualTracker />;
 }

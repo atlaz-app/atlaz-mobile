@@ -15,7 +15,11 @@ export default function StatsLayout() {
         headerShadowVisible: false,
       }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="[traceId]/index" options={{ headerShown: true, headerBackTitleVisible: false }} />
+      <Stack.Screen name="[traceId]/index" options={{ headerShown: true, headerBackButtonDisplayMode: 'minimal' }} />
+      <Stack.Screen
+        name="[traceId]/recording"
+        options={{ headerShown: true, headerBackButtonDisplayMode: 'minimal', presentation: 'modal' }}
+      />
     </Stack>
   );
 }

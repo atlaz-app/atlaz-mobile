@@ -57,3 +57,5 @@ export const VerifyEmail = ({ email }: RegistrationStepProps) => {
     </View>
   );
 };
+
+export default VerifyEmail;

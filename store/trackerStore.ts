@@ -5,19 +5,19 @@ import { Preset } from '@/types';
 
 interface TrackerState {
   sessionBase?: number;
-  config?: Preset;
-  tracePreset?: number;
+  preset?: Preset;
+  presetId?: number;
   setSessionBase: (sessionBase?: number) => void;
-  setConfig: (config: Preset) => void;
-  setTracePreset: (tracePreset?: number) => void;
+  setPreset: (config: Preset) => void;
+  setPresetId: (presetId?: number) => void;
 }
 
 export const useTrackerStore = create<TrackerState>()(
   persist(
     (set) => ({
       setSessionBase: (sessionBase?: number) => set({ sessionBase }),
-      setConfig: (config: Preset) => set({ config }),
-      setTracePreset: (tracePreset?: number) => set({ tracePreset }),
+      setPreset: (preset: Preset) => set({ preset }),
+      setPresetId: (presetId?: number) => set({ presetId }),
     }),
     {
       name: 'tracker-secure-storage',

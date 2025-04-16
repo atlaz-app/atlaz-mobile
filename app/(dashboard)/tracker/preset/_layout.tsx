@@ -18,6 +18,7 @@ export default function TrackerPresetLayout() {
         name="saved/index"
         options={{
           headerShown: false,
+          contentStyle: { backgroundColor: '#000000' },
         }}
       />
       <Stack.Screen name="new" options={{ headerShown: true, headerBackTitleVisible: false }} />

@@ -13,6 +13,8 @@ export type SensorList = Record<
 >;
 
 interface GlobalState {
+  dashboardTabBar: boolean;
+  setDashboardTabBar: (dashboardTabBar: boolean) => void;
   sensorList: SensorList;
   setSensorList: (sensorList: SensorList) => void;
   activeSensor?: string;
@@ -22,6 +24,8 @@ interface GlobalState {
 export const useGlobalStore = create<GlobalState>()(
   persist(
     (set) => ({
+      dashboardTabBar: true,
+      setDashboardTabBar: (dashboardTabBar?: boolean) => set({ dashboardTabBar }),
       sensorList: {},
       setActiveSensor: (activeSensor?: string) => set({ activeSensor }),
       setSensorList: (sensorList: SensorList) => set({ sensorList }),

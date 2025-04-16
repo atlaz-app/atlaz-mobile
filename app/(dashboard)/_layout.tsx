@@ -10,7 +10,7 @@ import { useGlobalStore } from '@/store';
 import { scanner } from '@/infrastructure/clients';
 
 export default function DashboardLayout() {
-  const { sensorList, setActiveSensor, setSensorList } = useGlobalStore();
+  const { sensorList, setActiveSensor, setSensorList, dashboardTabBar } = useGlobalStore();
   const { authenticated } = useAuthStore();
 
   const pathname = usePathname();
@@ -80,6 +80,8 @@ export default function DashboardLayout() {
     return <Redirect href={ScreenPath.AuthLogin} />;
   }
 
+  console.log('bar', dashboardTabBar);
+
   return (
     <Tabs
       screenOptions={{
@@ -87,9 +89,11 @@ export default function DashboardLayout() {
         tabBarStyle: {
           backgroundColor: 'black',
           borderTopWidth: 0,
+          display: pathname.includes('/tracker/monitor') ? 'none' : 'flex',
         },
         tabBarActiveTintColor: 'white',
-      }}>
+      }}
+      detachInactiveScreens={false}>
       <Tabs.Screen
         name="tracker"
         options={{

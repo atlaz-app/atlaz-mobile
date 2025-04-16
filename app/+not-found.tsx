@@ -7,7 +7,13 @@ import { ThemedView } from '@/components/Expo/ThemedView';
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
+      <Stack.Screen
+        options={{
+          title: 'Oops!',
+          contentStyle: { backgroundColor: 'black' },
+          headerStyle: { backgroundColor: 'black' },
+        }}
+      />
       <ThemedView style={styles.container}>
         <ThemedText type="title">This screen doesn't exist.</ThemedText>
         <Link href="/" style={styles.link}>
@@ -20,6 +26,7 @@ export default function NotFoundScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'black',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

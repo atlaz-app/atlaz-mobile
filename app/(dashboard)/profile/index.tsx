@@ -182,7 +182,7 @@ export default function Profile() {
                             <View
                               className="h-full bg-white rounded-sm"
                               style={{
-                                width: `${sensorData?.sensor?.getBattPower()}%`,
+                                width: `${sensorData?.sensor?.getBattPower() || 0}%`,
                               }}
                             />
                           </View>
@@ -193,7 +193,7 @@ export default function Profile() {
                             {sensorData.sensor?.getBattPower()}%
                           </Text>
                           <Text className="text-sm text-white/50 font-extrabold">
-                            {getBatteryTimeRemaining(sensorData.sensor.getBattPower())}
+                            {getBatteryTimeRemaining(sensorData.sensor.getBattPower() || 0)}
                           </Text>
                         </View>
                       </View>
